@@ -1,0 +1,17 @@
+name: release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: node test/logic.test.js
+      - run: sed -i "s/version=\"0.0.0\"/version=\"${GITHUB_REF_NAME#v}\"/" config.xml
+      - run: zip tizarr.wgt config.xml index.html style.css logic.js app.js icon.png
+      - run: gh release create "$GITHUB_REF_NAME" tizarr.wgt --title "$GITHUB_REF_NAME" --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}

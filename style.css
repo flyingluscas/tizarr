@@ -1,0 +1,37 @@
+/* 1920x1080 TV layout. Chromium 63: no flexbox gap, no aspect-ratio. */
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #111; color: #eee; font-family: sans-serif; font-size: 28px; }
+.view { display: none; padding: 60px 80px; height: 1080px; overflow-y: auto; }
+.view.active { display: block; }
+h1 { font-size: 48px; margin: 0 0 30px; }
+h2 { font-size: 36px; margin: 0 0 20px; }
+
+input, button { font: inherit; color: inherit; background: #222; border: 4px solid #333; border-radius: 10px; padding: 14px 20px; margin: 0 16px 16px 0; outline: none; }
+input { display: block; width: 100%; }
+button:disabled { opacity: .6; }
+.focused { border-color: #f5c518; box-shadow: 0 0 0 4px #f5c518; }
+
+.row { display: flex; align-items: center; margin-bottom: 16px; }
+.row input, .row button { margin-bottom: 0; }
+.row input { flex: 1; }
+.servers { display: flex; }
+.server { flex: 1; margin-right: 60px; }
+.label { color: #999; margin: 10px 0; }
+.chips { display: flex; flex-wrap: wrap; min-height: 20px; }
+.chip.selected { background: #f5c518; color: #111; }
+.status { color: #999; }
+.error { color: #ff6b6b; }
+
+#notice { min-height: 40px; margin: 10px 0; color: #999; }
+#results { display: flex; flex-wrap: wrap; }
+.card { position: relative; width: 250px; margin: 0 26px 30px 0; padding: 0; overflow: hidden; background: #1b1b1b; text-align: left; }
+.card img, .card .noposter { display: block; width: 100%; height: 375px; object-fit: cover; background: #333; }
+.card .t { padding: 10px 12px 0; font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card .m { padding: 4px 12px 12px; font-size: 20px; color: #999; }
+.badge { position: absolute; top: 10px; left: 10px; padding: 4px 10px; border-radius: 6px; background: #2e7d32; color: #fff; font-size: 20px; }
+
+#details.active { display: flex; }
+#d-poster { width: 500px; height: 750px; margin-right: 60px; object-fit: cover; background: #333; }
+.d-info { flex: 1; }
+#d-meta { color: #999; margin-bottom: 20px; }
+#d-overview { max-height: 600px; overflow: hidden; line-height: 1.5; }
