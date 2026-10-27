@@ -36,11 +36,40 @@ export function registerGlobalActions(actions) {
   Object.assign(globalActions, actions);
 }
 
+// Keep the focused element this far (design px) from the top/bottom edge of its screen.
+const SCROLL_MARGIN = 160;
+
+/**
+ * Scrolls the screen so the focused element sits comfortably inside it, and all the way to the
+ * top/bottom at the first/last element so headings and footers are not cut off. The stage is
+ * CSS-scaled, so rect distances are converted back to unscaled scroll pixels.
+ */
+function scrollIntoComfort(target) {
+  const view = target.closest('.view');
+  if (!view) return;
+  const items = $$('[data-nav]', view).filter((node) => node.offsetParent !== null);
+  if (target === items[0]) {
+    view.scrollTop = 0;
+    return;
+  }
+  if (target === items[items.length - 1]) {
+    view.scrollTop = view.scrollHeight;
+    return;
+  }
+  const viewRect = view.getBoundingClientRect();
+  const rect = target.getBoundingClientRect();
+  const scale = viewRect.height / view.clientHeight || 1;
+  const above = (rect.top - viewRect.top) / scale - SCROLL_MARGIN;
+  const below = (viewRect.bottom - rect.bottom) / scale - SCROLL_MARGIN;
+  if (above < 0) view.scrollTop += above;
+  else if (below < 0) view.scrollTop -= below;
+}
+
 export function setFocus(target) {
   if (!target) return;
   for (const node of $$('.focused')) node.classList.remove('focused');
   target.classList.add('focused');
-  target.scrollIntoView({ block: 'nearest' });
+  scrollIntoComfort(target);
 }
 
 export function show(id, focusTarget) {

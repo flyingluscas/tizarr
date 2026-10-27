@@ -5,8 +5,15 @@
 const DESIGN_WIDTH = 1920;
 const DESIGN_HEIGHT = 1080;
 
+function typing() {
+  return Boolean(document.activeElement && document.activeElement.tagName === 'INPUT');
+}
+
 export function fitStageToWindow(stage) {
   function fit() {
+    // The TV keyboard shrinks the viewport while it is open; keep the full-size layout and
+    // let the keyboard cover it instead of shrinking the whole app.
+    if (typing()) return;
     const scale = Math.min(innerWidth / DESIGN_WIDTH, innerHeight / DESIGN_HEIGHT);
     const left = (innerWidth - DESIGN_WIDTH * scale) / 2;
     const top = (innerHeight - DESIGN_HEIGHT * scale) / 2;
