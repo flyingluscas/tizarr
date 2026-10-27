@@ -71,20 +71,23 @@ the latest GitHub release.
 - One logical change per commit.
 - Agents may commit, push to `main` and cut releases on their own once `npm run check` passes.
 - Release: `npm version <patch|minor|major> -m "chore(release): %s"`, then
-  `git push --follow-tags`. CI checks that the tag matches `package.json`, builds and publishes
-  `tizarr.wgt`. Patch = fixes, minor = features.
+  `git push --follow-tags`. CI checks that the tag matches `package.json`, builds, signs and
+  publishes `tizarr.wgt`. Patch = fixes, minor = features.
+- Releases must be signed: Tizen 5.0 rejects unsigned packages and TizenBrew Installer only
+  re-signs on Tizen 7+. CI signs with the Tizen CLI (`scripts/sign.exp`) using the repo
+  secrets `TIZEN_AUTHOR_P12` (base64) and `TIZEN_AUTHOR_PASSWORD`. Never replace that author
+  certificate: the TV refuses updates signed by a different one.
 
 ## Commands
 
-| Command           | What it does                                    |
-| ----------------- | ----------------------------------------------- |
-| `npm ci`          | Install dev tools (Node 22, see `.nvmrc`)       |
-| `npm run check`   | Everything CI runs; must pass before committing |
-| `npm test`        | Unit tests only                                 |
-| `npm run lint`    | ESLint                                          |
-| `npm run format`  | Prettier (write)                                |
-| `npm run build`   | Bundle `src/` into `dist/`                      |
-| `npm run package` | Build and zip `dist/` into `tizarr.wgt`         |
+| Command          | What it does                                    |
+| ---------------- | ----------------------------------------------- |
+| `npm ci`         | Install dev tools (Node 22, see `.nvmrc`)       |
+| `npm run check`  | Everything CI runs; must pass before committing |
+| `npm test`       | Unit tests only                                 |
+| `npm run lint`   | ESLint                                          |
+| `npm run format` | Prettier (write)                                |
+| `npm run build`  | Bundle `src/` into `dist/`                      |
 
 ## How the code is organized
 
@@ -111,6 +114,7 @@ tizen/
 scripts/
   build.js          esbuild bundle → dist/
   validate.js       checks on dist/
+  sign.exp          signs dist/ into a .wgt in CI (Tizen CLI prompts need expect)
 test/               node:test unit tests
 ```
 

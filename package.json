@@ -10,7 +10,6 @@
   },
   "scripts": {
     "build": "node scripts/build.js",
-    "package": "npm run build && cd dist && zip -qr ../tizarr.wgt .",
     "test": "node --test",
     "lint": "eslint .",
     "format": "prettier --write .",

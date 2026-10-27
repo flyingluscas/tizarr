@@ -1,0 +1,13 @@
+#!/usr/bin/expect -f
+# Signs dist/ into dist/Tizarr.wgt using the "tizarr" Tizen security profile.
+# The Tizen CLI asks for passwords on a TTY even when profiles.xml has them, hence expect.
+# Env: TIZEN (path to the tizen CLI), TIZEN_AUTHOR_PASSWORD.
+set timeout 120
+spawn $env(TIZEN) package -t wgt -s tizarr -- dist
+expect {
+  "Author password:" { send "$env(TIZEN_AUTHOR_PASSWORD)\r"; exp_continue }
+  "Distributor1 password:" { send "tizenpkcs12passfordsigner\r"; exp_continue }
+  "(N) ?" { send "N\r"; exp_continue }
+  timeout { exit 1 }
+  eof
+}
