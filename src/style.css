@@ -209,7 +209,9 @@ button:disabled {
   display: flex;
   flex-wrap: wrap;
 }
+/* Cards are buttons, but stack poster, title and meta vertically (buttons are inline-flex). */
 .card {
+  display: block;
   position: relative;
   width: 250px;
   margin: 0 26px 30px 0;
