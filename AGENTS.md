@@ -73,8 +73,10 @@ their TV with their API keys in it.
   `api.themoviedb.org`. Keys are stored only in the TV's `localStorage` and never logged.
 - No telemetry, analytics, crash reporting, ads or calls to any other third party. Adding a
   new network destination needs the owner's approval. Approved so far, besides the user's own
-  servers and TMDB: `www.youtube-nocookie.com`, only as the trailer iframe, only with ids that
-  pass `isYouTubeId` (`src/data/trailers.js`).
+  servers and TMDB: the trailer player page `https://flyzin.dev/tizarr/player.html` (GitHub
+  Pages from this repo's `gh-pages` branch), which embeds `www.youtube-nocookie.com`. Both only
+  receive ids that pass `isYouTubeId` (`src/data/trailers.js`). The page exists because YouTube
+  requires a Referer and the TV app (local files) cannot send one.
 - The app may add titles (`POST` movie/series). The owner approved exactly three destructive
   actions, each only after the on-screen confirmation in `src/ui/dialog.js` (safe option
   first and focused): **Try another release** (remove queue items + blocklist, the server
@@ -169,7 +171,7 @@ src/
     tmdb.js           TMDB v3 client (optional key): lists, genres, TVDB ids
     shelves.js        which rows each browse screen shows and how to fill them (pure + loader)
     resolve.js        discovery title → Radarr/Sonarr lookup result, before requesting
-    trailers.js       trailer id (Radarr, else TMDB videos) and the nocookie embed URL
+    trailers.js       trailer id (Radarr, else TMDB videos) and the hosted player page URL
     details.js        facts, ratings breakdown, seasons and progress for Details (pure)
     media.js          movie/show kinds, mapping lookup results, request bodies (pure)
     library.js        library + queue → items with status (pure helpers + loader)

@@ -29,14 +29,12 @@ export async function findTrailer(item, raw, app) {
   return pickTrailer(await tmdbVideos(app, item.kind, tmdbId));
 }
 
-/**
- * Privacy-friendlier embed (no cookies until playback). Controls are hidden: the remote stays
- * with Tizarr, and Back closes the player.
- */
+// YouTube refuses embeds without a Referer (error 153), and the TV app runs from local files,
+// which never send one. This page (gh-pages branch, served by GitHub Pages on the owner's
+// domain) embeds the youtube-nocookie player from a real https origin.
+const PLAYER_PAGE = 'https://flyzin.dev/tizarr/player.html';
+
+/** Player page URL for a trailer; empty for anything that isn't a YouTube id. */
 export function embedUrl(id) {
-  if (!isYouTubeId(id)) return '';
-  return (
-    `https://www.youtube-nocookie.com/embed/${id}` +
-    '?autoplay=1&controls=0&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&fs=0'
-  );
+  return isYouTubeId(id) ? `${PLAYER_PAGE}?v=${id}` : '';
 }

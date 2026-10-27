@@ -22,9 +22,7 @@ test('pickTrailer prefers official trailers, then trailers, then teasers', () =>
   assert.equal(pickTrailer([]), null);
 });
 
-test('embedUrl builds the nocookie URL and refuses bad ids', () => {
-  assert.ok(
-    embedUrl('w0HgHet0sxg').startsWith('https://www.youtube-nocookie.com/embed/w0HgHet0sxg?'),
-  );
+test('embedUrl points at the hosted player page and refuses bad ids', () => {
+  assert.equal(embedUrl('w0HgHet0sxg'), 'https://flyzin.dev/tizarr/player.html?v=w0HgHet0sxg');
   assert.equal(embedUrl('javascript:x'), '');
 });
