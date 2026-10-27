@@ -1,0 +1,74 @@
+name: release
+
+# Runs when a GitHub release is published (drafts do not trigger workflows).
+# The release tag (vX.Y.Z) is the app version.
+on:
+  release:
+    types: [published]
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ github.event.release.tag_name }}
+      TIZEN_CLI_VERSION: '6.1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+
+      - name: Build
+        run: |
+          npm version --no-git-tag-version "${TAG#v}"
+          npm run build
+          node scripts/validate.js
+
+      - name: Cache Tizen CLI
+        id: tizen-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/tizen-studio
+            ~/.package-manager
+          key: tizen-cli-${{ env.TIZEN_CLI_VERSION }}
+
+      - name: Install Tizen CLI
+        if: steps.tizen-cache.outputs.cache-hit != 'true'
+        run: |
+          curl -sSfo tizen.bin "https://download.tizen.org/sdk/Installer/tizen-studio_${TIZEN_CLI_VERSION}/web-cli_Tizen_Studio_${TIZEN_CLI_VERSION}_ubuntu-64.bin"
+          chmod +x tizen.bin
+          ./tizen.bin --accept-license "$HOME/tizen-studio"
+          rm tizen.bin
+
+      # Tizen < 7 installs packages as-is, so they must be signed; TizenBrew Installer only
+      # re-signs on Tizen 7+. The author certificate must never change or TV updates fail.
+      - name: Sign
+        env:
+          TIZEN_AUTHOR_P12: ${{ secrets.TIZEN_AUTHOR_P12 }}
+          TIZEN_AUTHOR_PASSWORD: ${{ secrets.TIZEN_AUTHOR_PASSWORD }}
+        run: |
+          sudo apt-get install -y -qq expect
+          export TIZEN="$HOME/tizen-studio/tools/ide/bin/tizen"
+          PROFILES="$HOME/tizen-studio-data/profile/profiles.xml"
+          echo "$TIZEN_AUTHOR_P12" | base64 -d > "$RUNNER_TEMP/author.p12"
+          "$TIZEN" security-profiles add -n tizarr -a "$RUNNER_TEMP/author.p12" -p "$TIZEN_AUTHOR_PASSWORD"
+          # The CLI cannot decrypt the passwords it stores, so write them in plain text.
+          sed -i -E \
+            -e "/distributor=\"0\"/ s|password=\"[^\"]*\"|password=\"$TIZEN_AUTHOR_PASSWORD\"|" \
+            -e "/distributor=\"1\"/ s|password=\"[^\"]*\"|password=\"tizenpkcs12passfordsigner\"|" \
+            "$PROFILES"
+          "$TIZEN" cli-config "profiles.path=$PROFILES"
+          expect scripts/sign.exp
+          unzip -l dist/Tizarr.wgt | grep -q author-signature.xml
+          mv dist/Tizarr.wgt tizarr.wgt
+
+      - name: Attach to release
+        run: gh release upload "$TAG" tizarr.wgt --clobber
+        env:
+          GH_TOKEN: ${{ github.token }}

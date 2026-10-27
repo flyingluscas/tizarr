@@ -1,6 +1,6 @@
 {
   "name": "tizarr",
-  "version": "0.3.1",
+  "version": "0.0.0",
   "private": true,
   "description": "Search and request movies/shows from Sonarr & Radarr on a Samsung Tizen TV",
   "license": "MIT",
@@ -13,7 +13,8 @@
     "test": "node --test",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "check": "eslint . && prettier --check . && node --test && npm run build && node scripts/validate.js"
+    "check": "eslint . && prettier --check . && node --test",
+    "validate": "npm run build && node scripts/validate.js"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -20,7 +20,7 @@ Requires Node 22.
 
 ```sh
 npm ci
-npm run check     # lint, format check, tests, build, validation
+npm run check     # lint, format check, tests
 npm run build     # bundle into dist/ (open dist/index.html in a browser; Escape = Back)
 ```
 

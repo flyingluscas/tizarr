@@ -57,9 +57,10 @@ the latest GitHub release.
 - Every change to logic (`src/media.js`, `src/config.js`, `src/api.js`, or new pure code)
   comes with tests in `test/`, using the built-in `node:test` and `node:assert/strict`.
 - Keep pure logic out of view modules so it can be tested without a DOM.
-- `npm run check` must pass before every commit. It runs lint, the format check, the tests,
-  the build and `scripts/validate.js` (required files, Chromium-compatible syntax,
-  version match).
+- `npm run check` (lint, format check, tests) must pass before every commit; CI runs it on
+  every pull request and push to `main`.
+- When touching the build, `index.html`, `tizen/` or `scripts/`, also run `npm run validate`
+  (builds `dist/` and checks required files, Chromium-compatible syntax and the version).
 - UI changes: also verify in a browser (`npm run build`, then open `dist/index.html`; Escape
   acts as the Back key) and say what you checked.
 
@@ -70,9 +71,11 @@ the latest GitHub release.
 - Commits must **never** include `Co-Authored-By` trailers or any AI attribution.
 - One logical change per commit.
 - Agents may commit, push to `main` and cut releases on their own once `npm run check` passes.
-- Release: `npm version <patch|minor|major> -m "chore(release): %s"`, then
-  `git push --follow-tags`. CI checks that the tag matches `package.json`, builds, signs and
-  publishes `tizarr.wgt`. Patch = fixes, minor = features.
+- Releases are GitHub releases. Publishing one with a new tag `vX.Y.Z` (patch = fixes,
+  minor = features) triggers `.github/workflows/release.yml`, which builds, validates, signs
+  and attaches `tizarr.wgt` to it. The tag is the app version; `package.json` stays at
+  `0.0.0`. From the CLI: `gh release create vX.Y.Z --generate-notes`. Drafts do not trigger
+  the workflow; it runs when the release is published.
 - Releases must be signed: Tizen 5.0 rejects unsigned packages and TizenBrew Installer only
   re-signs on Tizen 7+. CI signs with the Tizen CLI (`scripts/sign.exp`) using the repo
   secrets `TIZEN_AUTHOR_P12` (base64) and `TIZEN_AUTHOR_PASSWORD`. Never replace that author

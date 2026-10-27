@@ -1,4 +1,4 @@
-// Sanity checks on dist/ before it is packaged. Run after `npm run build`.
+// Sanity checks on dist/ before it is signed. `npm run validate` builds first.
 import { parse } from 'acorn';
 import { access, readFile } from 'node:fs/promises';
 
