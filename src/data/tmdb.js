@@ -88,6 +88,19 @@ export async function fetchRecommendations(app, kind, tmdbId) {
     .map((result) => fromTmdb(kind, result));
 }
 
+/**
+ * Videos for a title in the UI language, plus English and language-less ones so most titles
+ * have at least one trailer.
+ */
+export async function tmdbVideos(app, kind, tmdbId) {
+  const language = LANGUAGE_CODES[app.language] || LANGUAGE_CODES.en;
+  const data = await get(app.tmdbKey, `/${TMDB_KIND[kind]}/${tmdbId}/videos`, {
+    language,
+    include_video_language: `${language.slice(0, 2)},en,null`,
+  });
+  return data.results || [];
+}
+
 /** Map of season number → episode count (Sonarr doesn't know them before a show is added). */
 export async function fetchSeasonCounts(key, tmdbId) {
   const show = await get(key, `/tv/${tmdbId}`);

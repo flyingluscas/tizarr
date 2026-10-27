@@ -13,6 +13,7 @@ import { initSettings } from './screens/settings.js';
 import { fitStageToWindow } from './stage.js';
 import { state } from './state.js';
 import { initDialog } from './ui/dialog.js';
+import { initPlayer } from './ui/player.js';
 import { renderIcons } from './ui/icons.js';
 
 fitStageToWindow($('#stage'));
@@ -28,6 +29,7 @@ initLibrary();
 initDetails();
 initDownloads();
 initDialog();
+initPlayer();
 startNavigation();
 
 openScreen(isConfigValid(state.config) ? 'home' : 'settings');

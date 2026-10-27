@@ -9,6 +9,7 @@ import { KINDS, backdropOf, buildRequestBody, httpsOnly, resizeTmdb } from '../d
 import { resolveForRequest } from '../data/resolve.js';
 import { libraryIndex, withLibraryStatus } from '../data/shelves.js';
 import { fetchRecommendations, fetchSeasonCounts } from '../data/tmdb.js';
+import { findTrailer } from '../data/trailers.js';
 import { $, el, setStatus } from '../dom.js';
 import { t } from '../i18n.js';
 import { closeOverlay, openOverlay, refreshScreen, registerOverlay } from '../router.js';
@@ -16,6 +17,7 @@ import { state } from '../state.js';
 import { describe, markInLibrary, ratingPill, statusPill } from '../ui/card.js';
 import { renderGrid } from '../ui/grid.js';
 import { iconSvg } from '../ui/icons.js';
+import { playTrailer } from '../ui/player.js';
 import {
   closePanel,
   hideSeasons,
@@ -40,6 +42,7 @@ let similar = [];
 let requestsAllSeasons = false;
 // { kind, titleId, title } of the owned title Details can delete / re-search.
 let manageTarget = null;
+let trailerId = null;
 // Incremented on every open so late responses for a previous title are ignored.
 let openId = 0;
 
@@ -174,11 +177,25 @@ function renderSimilar(item, tmdbId, id) {
     });
 }
 
+/** Shows the Trailer button once a trailer is found (Radarr first, then TMDB). */
+function showTrailer(item, raw, id) {
+  findTrailer(item, raw, state.config.app)
+    .then((found) => {
+      if (id !== openId || !found) return;
+      trailerId = found;
+      $('#d-trailer').hidden = false;
+    })
+    .catch(() => {
+      // No trailer: the button stays hidden.
+    });
+}
+
 /** Fills facts, ratings, backdrop, seasons and status once Radarr/Sonarr answers. */
 async function enrich(item, id) {
   const server = state.config[KINDS[item.kind].server];
   if (!serverReady(server)) {
     renderSimilar(item, item.tmdbId, id);
+    showTrailer(item, null, id);
     return;
   }
   try {
@@ -196,10 +213,12 @@ async function enrich(item, id) {
       if (raw.id > 0) showManage(item, raw);
     } else if (item.kind === 'show') showSeasonChoice(item, raw);
     renderSimilar(item, item.tmdbId || raw.tmdbId, id);
+    showTrailer(item, raw, id);
     await renderProgress(item, raw, id);
   } catch {
     // Lookup failed: keep the basic info; pressing Request reports the error.
     renderSimilar(item, item.tmdbId, id);
+    showTrailer(item, null, id);
   }
 }
 
@@ -247,6 +266,8 @@ export function openDetails(item, card) {
   renderStatus(item);
   hideSeasons();
   $('#d-manage').hidden = true;
+  $('#d-trailer').hidden = true;
+  trailerId = null;
   requestsAllSeasons = false;
   setRequestState(item.inLibrary ? 'inLibrary' : 'ready');
 
@@ -278,6 +299,7 @@ export function initDetails() {
       seasonRow: toggleSeasonRow,
       panelRequest: requestFromPanel,
       closePanel,
+      trailer: () => playTrailer(trailerId),
       tryAnother: () => runManage('another'),
       deleteTitle: () => runManage('delete'),
       open: openSimilar,

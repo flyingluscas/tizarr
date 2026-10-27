@@ -76,6 +76,8 @@ export default {
   'details.retry': 'Retry: {message}',
 
   'details.similar': 'More like this',
+  'details.trailer': 'Trailer',
+  'player.hint': 'Press Back to close',
   'details.continuing': 'Continuing',
   'details.ended': 'Ended',
   'details.seasons': '{count} seasons',

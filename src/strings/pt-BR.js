@@ -78,6 +78,8 @@ export default {
   'details.retry': 'Tentar de novo: {message}',
 
   'details.similar': 'Mais como este',
+  'details.trailer': 'Trailer',
+  'player.hint': 'Pressione Voltar para fechar',
   'details.continuing': 'Em andamento',
   'details.ended': 'Finalizada',
   'details.seasons': '{count} temporadas',

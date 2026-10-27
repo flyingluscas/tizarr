@@ -165,6 +165,11 @@
         ></div>
       </div>
 
+      <div id="player" class="view">
+        <iframe id="player-frame" tabindex="-1" allow="autoplay; encrypted-media"></iframe>
+        <div class="player-hint" data-i18n="player.hint"></div>
+      </div>
+
       <div id="dialog" class="view">
         <div class="dialog-box">
           <h1 id="dialog-title"></h1>
@@ -187,6 +192,9 @@
             <div id="d-actions" class="row">
               <button id="d-request" data-nav data-action="request">
                 <span class="icon" data-icon="request"></span><span class="label"></span>
+              </button>
+              <button id="d-trailer" data-nav data-action="trailer" hidden>
+                <span class="icon" data-icon="play"></span><span data-i18n="details.trailer"></span>
               </button>
               <button id="d-choose" data-nav data-action="choose" hidden>
                 <span class="icon" data-icon="show"></span><span data-i18n="seasons.choose"></span>

@@ -72,7 +72,9 @@ their TV with their API keys in it.
 - Each server's API key is sent only to that server's own configured URL; the TMDB key only to
   `api.themoviedb.org`. Keys are stored only in the TV's `localStorage` and never logged.
 - No telemetry, analytics, crash reporting, ads or calls to any other third party. Adding a
-  new network destination needs the owner's approval.
+  new network destination needs the owner's approval. Approved so far, besides the user's own
+  servers and TMDB: `www.youtube-nocookie.com`, only as the trailer iframe, only with ids that
+  pass `isYouTubeId` (`src/data/trailers.js`).
 - The app may add titles (`POST` movie/series). The owner approved exactly three destructive
   actions, each only after the on-screen confirmation in `src/ui/dialog.js` (safe option
   first and focused): **Try another release** (remove queue items + blocklist, the server
@@ -167,6 +169,7 @@ src/
     tmdb.js           TMDB v3 client (optional key): lists, genres, TVDB ids
     shelves.js        which rows each browse screen shows and how to fill them (pure + loader)
     resolve.js        discovery title → Radarr/Sonarr lookup result, before requesting
+    trailers.js       trailer id (Radarr, else TMDB videos) and the nocookie embed URL
     details.js        facts, ratings breakdown, seasons and progress for Details (pure)
     media.js          movie/show kinds, mapping lookup results, request bodies (pure)
     library.js        library + queue → items with status (pure helpers + loader)
@@ -178,6 +181,7 @@ src/
     lazy-images.js    loads <img data-src> near the viewport (IntersectionObserver)
     icons.js          inline Lucide SVG icons, rendered into <span data-icon>
     dialog.js         full-screen choice/confirmation used before destructive actions
+    player.js         full-screen trailer player; Back closes it
   screens/
     settings.js       language, region, TMDB key; per server URL/key, Test, defaults
     browse.js         Home, Movies, Shows: shelves that scroll sideways
@@ -236,6 +240,6 @@ Sonarr and Radarr v3, header `X-Api-Key`: `system/status`, `qualityprofile`, `ro
 
 TMDB v3 (`api_key` query param): `configuration`, `trending/{movie|tv}/week`,
 `{movie|tv}/popular`, `{movie|tv}/top_rated`, `discover/{movie|tv}`,
-`{movie|tv}/{id}/recommendations`, `tv/{id}/external_ids`.
+`{movie|tv}/{id}/recommendations`, `{movie|tv}/{id}/videos`, `tv/{id}`, `tv/{id}/external_ids`.
 
 All of them send `Access-Control-Allow-Origin: *`, so the app calls them directly.
