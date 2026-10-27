@@ -29,9 +29,8 @@ body {
   overflow: hidden;
   transform-origin: 0 0;
 }
-/* Sidebar: persistent menu on the left, hidden while an overlay (Details) is open. */
+/* Sidebar: persistent menu on the left, always visible (also over Details). */
 #sidebar {
-  display: none;
   position: absolute;
   top: 0;
   left: 0;
@@ -40,10 +39,7 @@ body {
   padding: 50px 24px;
   background: #0b0b0b;
 }
-.with-sidebar #sidebar {
-  display: block;
-}
-.with-sidebar .view {
+.view {
   margin-left: 300px;
 }
 .brand {

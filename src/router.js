@@ -21,7 +21,6 @@ export function registerScreen(id, { actions, onOpen } = {}) {
 
 export function openScreen(id) {
   currentScreen = id;
-  $('#stage').classList.add('with-sidebar');
   for (const item of $$('#sidebar [data-screen]')) {
     item.classList.toggle('active', item.dataset.screen === id);
   }
@@ -30,18 +29,17 @@ export function openScreen(id) {
   show(id);
 }
 
+/** Overlays (Details) cover the current screen but keep the sidebar reachable. */
 export function registerOverlay(id, { actions } = {}) {
-  registerView(id, { actions, back: closeOverlay });
+  registerView(id, { actions, sidebar: true, back: closeOverlay });
 }
 
 export function openOverlay(id, returnFocus) {
   overlayReturnFocus = returnFocus;
-  $('#stage').classList.remove('with-sidebar');
   show(id);
 }
 
 export function closeOverlay() {
-  $('#stage').classList.add('with-sidebar');
   const target = overlayReturnFocus && overlayReturnFocus.isConnected ? overlayReturnFocus : null;
   show(currentScreen, target);
 }
