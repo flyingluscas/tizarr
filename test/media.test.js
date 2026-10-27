@@ -1,6 +1,14 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { buildRequestBody, interleave, ratingOf, resizeTmdb, toItem } from '../src/data/media.js';
+import {
+  backdropOf,
+  buildRequestBody,
+  httpsOnly,
+  interleave,
+  ratingOf,
+  resizeTmdb,
+  toItem,
+} from '../src/data/media.js';
 
 const movie = {
   title: 'Dune',
@@ -76,4 +84,30 @@ test('ratingOf prefers IMDb, then TMDB, then Sonarr, and ignores missing scores'
   assert.equal(ratingOf({ ratings: { value: 0 } }), null);
   assert.equal(ratingOf({}), null);
   assert.equal(toItem('movie', { title: 'X', ratings: { imdb: { value: 6.12 } } }).rating, 6.1);
+});
+
+test('buildRequestBody applies season presets and hand-picked seasons', () => {
+  const show = {
+    title: 'S',
+    seasons: [{ seasonNumber: 0 }, { seasonNumber: 1 }, { seasonNumber: 2 }],
+  };
+  const latest = buildRequestBody('show', show, server, { preset: 'lastSeason' });
+  assert.deepEqual(latest.addOptions, { monitor: 'lastSeason', searchForMissingEpisodes: true });
+  const picked = buildRequestBody('show', show, server, { picked: [2] });
+  assert.deepEqual(picked.addOptions, { monitor: 'skip', searchForMissingEpisodes: true });
+  assert.deepEqual(
+    picked.seasons.map((season) => season.monitored),
+    [false, false, true],
+  );
+  assert.equal(show.seasons[2].monitored, undefined, 'lookup result is not mutated');
+});
+
+test('httpsOnly and backdropOf only pass https image URLs', () => {
+  assert.equal(httpsOnly('javascript:alert(1)'), '');
+  assert.equal(httpsOnly('http://x/y.jpg'), '');
+  assert.equal(httpsOnly('https://x/y.jpg'), 'https://x/y.jpg');
+  const images = [{ coverType: 'fanart', remoteUrl: 'https://image.tmdb.org/t/p/original/b.jpg' }];
+  assert.equal(backdropOf({ images }), 'https://image.tmdb.org/t/p/w1280/b.jpg');
+  assert.equal(backdropOf({ images: [{ coverType: 'fanart', remoteUrl: 'data:x' }] }), '');
+  assert.equal(backdropOf({}), '');
 });

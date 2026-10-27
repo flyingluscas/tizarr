@@ -161,6 +161,7 @@ src/
     tmdb.js           TMDB v3 client (optional key): lists, genres, TVDB ids
     shelves.js        which rows each browse screen shows and how to fill them (pure + loader)
     resolve.js        discovery title → Radarr/Sonarr lookup result, before requesting
+    details.js        facts, ratings breakdown, seasons and progress for Details (pure)
     media.js          movie/show kinds, mapping lookup results, request bodies (pure)
     library.js        library + queue → items with status (pure helpers + loader)
     cache.js          memory + localStorage cache with TTL, stale-while-revalidate
@@ -174,7 +175,7 @@ src/
     browse.js         Home, Movies, Shows: shelves that scroll sideways
     search.js         parallel lookups, poster grid
     library.js        Movies | Shows tabs with status
-    details.js        overlay: overview and Request button
+    details.js        overlay: backdrop hero, facts, ratings, season picker, More like this
   fonts/              Roboto variable font (woff2, latin) + its OFL license
   index.html          markup for all screens (text via data-i18n)
   style.css           1920×1080 TV layout
@@ -199,6 +200,9 @@ Patterns to follow:
   (items gain a field), bump `CACHE_VERSION` in `src/data/cache.js`.
 - **Images** in lists use `data-src` + `observeImages()`, never `src` directly. Posters
   are TMDB `w342` (`resizeTmdb`).
+- **Requests** go through `buildRequestBody(kind, lookupResult, server, seasons)`. Season
+  presets are Sonarr `MonitorTypes` (`all`, `lastSeason`, `future`); hand-picked seasons use
+  `monitor: 'skip'`, the only mode in which Sonarr keeps the season flags we send.
 - **Shelves** are declared in `src/data/shelves.js`; add a row there, not in the screen.
   TMDB shelves are hidden without a TMDB key, and empty shelves are hidden.
 - **Icons:** `<span class="icon" data-icon="name"></span>` next to a `<span data-i18n>` label
@@ -216,9 +220,11 @@ Patterns to follow:
 
 Sonarr and Radarr v3, header `X-Api-Key`: `system/status`, `qualityprofile`, `rootfolder`,
 `series/lookup` / `movie/lookup` (also `tmdb:<id>` / `tvdb:<id>` terms), `series`, `movie`,
-`queue`, Radarr `importlist/movie?includeRecommendations=true`, `POST series` / `POST movie`.
+`series/{id}` (per-season statistics), `queue`, Radarr
+`importlist/movie?includeRecommendations=true`, `POST series` / `POST movie`.
 
 TMDB v3 (`api_key` query param): `configuration`, `trending/{movie|tv}/week`,
-`{movie|tv}/popular`, `{movie|tv}/top_rated`, `discover/{movie|tv}`, `tv/{id}/external_ids`.
+`{movie|tv}/popular`, `{movie|tv}/top_rated`, `discover/{movie|tv}`,
+`{movie|tv}/{id}/recommendations`, `tv/{id}/external_ids`.
 
 All of them send `Access-Control-Allow-Origin: *`, so the app calls them directly.

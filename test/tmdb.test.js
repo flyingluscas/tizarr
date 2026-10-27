@@ -36,6 +36,7 @@ test('fromTmdb maps movies and shows to items', () => {
     year: '2021',
     overview: 'Spice.',
     poster: 'https://image.tmdb.org/t/p/w342/p.jpg',
+    backdrop: '',
     rating: null,
     inLibrary: false,
     raw: null,

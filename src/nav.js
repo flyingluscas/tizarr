@@ -89,7 +89,8 @@ export function setFocus(target) {
 export function show(id, focusTarget) {
   for (const view of $$('.view')) view.classList.toggle('active', view.id === id);
   current = id;
-  setFocus(focusTarget || $(`#${id} [data-nav]`));
+  const firstVisible = $$(`#${id} [data-nav]`).find((node) => node.offsetParent !== null);
+  setFocus(focusTarget || firstVisible);
 }
 
 const DIRECTIONS = { [KEY.LEFT]: 'left', [KEY.RIGHT]: 'right', [KEY.UP]: 'up', [KEY.DOWN]: 'down' };

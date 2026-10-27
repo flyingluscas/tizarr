@@ -38,6 +38,11 @@ export function add(server, kind, body) {
   return request(server, 'POST', KINDS[kind].addPath, body);
 }
 
+/** One series with per-season download statistics (lookups don't include them). */
+export function getSeriesById(server, id) {
+  return request(server, 'GET', `/api/v3/series/${id}`);
+}
+
 export function getMovies(server) {
   return request(server, 'GET', '/api/v3/movie');
 }

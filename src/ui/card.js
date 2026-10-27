@@ -9,7 +9,7 @@ export function describe(item) {
 }
 
 /** Library status pill ("In library", "Downloading 40%", "3/10 episodes"…), or null. */
-function badge(item) {
+export function statusPill(item) {
   if (item.status) {
     const vars = { progress: item.progress || 0, ...item.episodes };
     return el('span', `badge status-${item.status}`, t(`status.${item.status}`, vars));
@@ -41,7 +41,7 @@ export function renderCard(item, index) {
     img.alt = '';
     poster.appendChild(img);
   }
-  const status = badge(item);
+  const status = statusPill(item);
   if (status) poster.appendChild(status);
   if (item.rating) poster.appendChild(ratingPill(item.rating));
   card.appendChild(poster);
@@ -51,5 +51,5 @@ export function renderCard(item, index) {
 }
 
 export function markInLibrary(card) {
-  if (!$('.badge', card)) $('.poster', card).appendChild(badge({ inLibrary: true }));
+  if (!$('.badge', card)) $('.poster', card).appendChild(statusPill({ inLibrary: true }));
 }

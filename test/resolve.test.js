@@ -62,6 +62,14 @@ test('shows go TMDB → TVDB id → Sonarr lookup', async () => {
   assert.equal(seen[1], 'http://arr.example/api/v3/series/lookup?term=tvdb%3A371980');
 });
 
+test('shows that already carry a TVDB id skip TMDB', async () => {
+  const seen = [];
+  globalThis.XMLHttpRequest = fakeXhrByUrl({ 'series/lookup': [{ title: 'Ted Lasso' }] }, seen);
+  const config = { ...emptyConfig(), sonarr: server };
+  await resolveForRequest({ kind: 'show', tmdbId: 97546, tvdbId: 383203, raw: null }, config);
+  assert.deepEqual(seen, ['http://arr.example/api/v3/series/lookup?term=tvdb%3A383203']);
+});
+
 test('resolveForRequest fails clearly when nothing matches', async () => {
   globalThis.XMLHttpRequest = fakeXhrByUrl({ lookup: [] }, []);
   const config = { ...emptyConfig(), radarr: server };

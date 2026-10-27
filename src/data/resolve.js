@@ -10,8 +10,9 @@ export async function resolveForRequest(item, config) {
   const server = config[KINDS[item.kind].server];
   let term = `tmdb:${item.tmdbId}`;
   if (item.kind === 'show') {
-    // Sonarr looks shows up by TVDB id, which TMDB knows.
-    const tvdbId = config.app.tmdbKey ? await tvdbIdFor(config.app.tmdbKey, item.tmdbId) : null;
+    // Sonarr looks shows up by TVDB id: Sonarr items carry it, TMDB items ask TMDB.
+    let tvdbId = item.tvdbId;
+    if (!tvdbId && config.app.tmdbKey) tvdbId = await tvdbIdFor(config.app.tmdbKey, item.tmdbId);
     if (!tvdbId) throw new Error(t('error.notFound'));
     term = `tvdb:${tvdbId}`;
   }

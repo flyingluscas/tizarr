@@ -9,10 +9,25 @@ export const KINDS = {
 const TMDB_ORIGINAL = '/t/p/original/';
 const TMDB_CARD_SIZE = '/t/p/w342/';
 
+/** Only https image URLs may reach an <img> (see AGENTS.md security rules). */
+export function httpsOnly(url) {
+  return typeof url === 'string' && url.indexOf('https://') === 0 ? url : '';
+}
+
+// Backdrops fill a 1920 px screen behind dimmed text; 1280 px is sharp enough and much lighter.
+const BACKDROP_SIZE = 'w1280';
+
+/** Fanart from a Radarr/Sonarr result, sized for the Details backdrop. */
+export function backdropOf(result) {
+  const fanart = (result.images || []).find((image) => image.coverType === 'fanart');
+  const url = httpsOnly(fanart && fanart.remoteUrl);
+  return url && resizeTmdb(url, BACKDROP_SIZE);
+}
+
 export function posterUrl(images = []) {
   // Only remoteUrl is reachable without auth; `url` points at the *arr server.
   const poster = images.find((image) => image.coverType === 'poster' && image.remoteUrl);
-  return poster ? poster.remoteUrl.replace(TMDB_ORIGINAL, TMDB_CARD_SIZE) : '';
+  return poster ? httpsOnly(poster.remoteUrl.replace(TMDB_ORIGINAL, TMDB_CARD_SIZE)) : '';
 }
 
 /** Swaps the size segment of a TMDB image URL ("…/t/p/w185/x.jpg" → "…/t/p/w342/x.jpg"). */
@@ -40,6 +55,7 @@ export function toItem(kind, result) {
   return {
     kind,
     tmdbId: result.tmdbId || null,
+    tvdbId: result.tvdbId || null,
     title: result.title,
     year: result.year || '',
     overview: result.overview || '',
@@ -60,8 +76,15 @@ export function interleave(a, b) {
   return out;
 }
 
-/** The add request is the lookup result plus our one-click defaults. */
-export function buildRequestBody(kind, result, server) {
+/** Sonarr monitor presets offered in Details (values from Sonarr's MonitorTypes). */
+export const SEASON_PRESETS = ['all', 'lastSeason', 'future'];
+
+/**
+ * The add request is the lookup result plus our defaults. For shows, `seasons` is either
+ * { preset } (one of SEASON_PRESETS) or { picked: [seasonNumbers] }; picked seasons use
+ * Sonarr's 'skip' mode, which keeps exactly the season flags we send.
+ */
+export function buildRequestBody(kind, result, server, seasons = { preset: 'all' }) {
   const body = {
     ...result,
     qualityProfileId: server.qualityProfileId,
@@ -70,7 +93,15 @@ export function buildRequestBody(kind, result, server) {
   };
   if (kind === 'show') {
     body.seasonFolder = true;
-    body.addOptions = { monitor: 'all', searchForMissingEpisodes: true };
+    if (seasons.picked) {
+      body.seasons = (result.seasons || []).map((season) => ({
+        ...season,
+        monitored: seasons.picked.includes(season.seasonNumber),
+      }));
+      body.addOptions = { monitor: 'skip', searchForMissingEpisodes: true };
+    } else {
+      body.addOptions = { monitor: seasons.preset, searchForMissingEpisodes: true };
+    }
   } else {
     body.minimumAvailability = 'released';
     body.addOptions = { searchForMovie: true };

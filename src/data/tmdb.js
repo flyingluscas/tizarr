@@ -6,6 +6,7 @@ const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_URL = 'https://image.tmdb.org/t/p/';
 // Row posters are 240 px wide; w185 would be upscaled and blurry on a TV.
 const ROW_POSTER_SIZE = 'w342';
+const BACKDROP_SIZE = 'w1280';
 // One page is 20 titles, enough for a row.
 const MAX_ITEMS = 20;
 
@@ -51,6 +52,7 @@ export function fromTmdb(kind, result) {
     year: date.slice(0, 4),
     overview: result.overview || '',
     poster: result.poster_path ? `${IMAGE_URL}${ROW_POSTER_SIZE}${result.poster_path}` : '',
+    backdrop: result.backdrop_path ? `${IMAGE_URL}${BACKDROP_SIZE}${result.backdrop_path}` : '',
     rating:
       result.vote_count > 0 && result.vote_average > 0
         ? Math.round(result.vote_average * 10) / 10
@@ -68,6 +70,18 @@ export async function fetchList(app, type, kind, genreId) {
     region: app.region,
   });
   const data = await get(app.tmdbKey, path, params);
+  return (data.results || [])
+    .filter((result) => result.poster_path)
+    .slice(0, MAX_ITEMS)
+    .map((result) => fromTmdb(kind, result));
+}
+
+/** "More like this" for a title. */
+export async function fetchRecommendations(app, kind, tmdbId) {
+  const language = LANGUAGE_CODES[app.language] || LANGUAGE_CODES.en;
+  const data = await get(app.tmdbKey, `/${TMDB_KIND[kind]}/${tmdbId}/recommendations`, {
+    language,
+  });
   return (data.results || [])
     .filter((result) => result.poster_path)
     .slice(0, MAX_ITEMS)

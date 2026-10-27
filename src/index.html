@@ -149,15 +149,30 @@
       </div>
 
       <div id="details" class="view">
-        <img id="d-poster" alt="" />
-        <div class="d-info">
-          <h1 id="d-title"></h1>
-          <div id="d-meta"></div>
-          <p id="d-overview"></p>
-          <button id="d-request" data-nav data-action="request">
-            <span class="icon" data-icon="request"></span><span class="label"></span>
-          </button>
+        <div class="backdrop"><img id="d-backdrop" alt="" /></div>
+        <div class="d-hero">
+          <img id="d-poster" alt="" />
+          <div class="d-info">
+            <div id="d-status"></div>
+            <h1 id="d-title"></h1>
+            <div id="d-facts" class="d-facts"></div>
+            <div id="d-ratings" class="d-ratings"></div>
+            <p id="d-overview"></p>
+            <div id="d-progress" class="d-progress"></div>
+            <div id="d-picker" hidden>
+              <div class="label" data-i18n="details.seasonsTitle"></div>
+              <div id="d-presets" class="chips"></div>
+              <div id="d-season-list" class="chips" hidden></div>
+            </div>
+            <button id="d-request" data-nav data-action="request">
+              <span class="icon" data-icon="request"></span><span class="label"></span>
+            </button>
+          </div>
         </div>
+        <section id="d-similar" class="shelf" hidden>
+          <h2 data-i18n="details.similar"></h2>
+          <div class="shelf-track"></div>
+        </section>
       </div>
     </div>
     <script src="app.js"></script>

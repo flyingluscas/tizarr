@@ -299,42 +299,96 @@ button:disabled {
 .rating svg {
   fill: currentColor;
 }
-/* In Details the pill sits inline before the year/kind text. */
-#d-meta .rating {
-  position: static;
-  display: inline-flex;
-  margin-right: 14px;
-  font-size: 26px;
+/* Details: dimmed backdrop behind a poster + info hero, "More like this" below. */
+#details {
+  position: relative;
 }
-.status-downloading {
-  background: #1565c0;
+.backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1080px;
+  overflow: hidden;
 }
-.status-missing {
-  background: #8e2c2c;
+.backdrop img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.4;
 }
-.status-upcoming {
-  background: #6a3fa0;
+/* Darken toward the text and the bottom so it stays readable over any image. */
+.backdrop::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    linear-gradient(to top, #111 0%, rgba(17, 17, 17, 0) 45%),
+    linear-gradient(to right, rgba(17, 17, 17, 0.85) 0%, rgba(17, 17, 17, 0.3) 70%);
 }
-
-#details.active {
+.d-hero,
+#d-similar {
+  position: relative;
+}
+.d-hero {
   display: flex;
+  min-height: 900px;
 }
 #d-poster {
-  width: 500px;
-  height: 750px;
+  width: 400px;
+  height: 600px;
   margin-right: 60px;
+  border-radius: 14px;
   object-fit: cover;
   background: #333;
 }
 .d-info {
   flex: 1;
 }
-#d-meta {
+#d-status .badge {
+  position: static;
+  display: inline-block;
+  margin-bottom: 14px;
+}
+.d-facts {
+  margin-bottom: 18px;
+  color: #ccc;
+  font-size: 26px;
+}
+.d-ratings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.d-rating {
+  display: inline-flex;
+  align-items: baseline;
+  margin-right: 30px;
+}
+.d-rating-label {
+  margin-right: 8px;
   color: #999;
-  margin-bottom: 20px;
+  font-size: 22px;
+}
+.d-rating-value {
+  font-size: 30px;
+  font-weight: 700;
+}
+.d-ratings .rating {
+  position: static;
+  font-size: 26px;
 }
 #d-overview {
-  max-height: 600px;
+  max-width: 1000px;
+  max-height: 300px;
   overflow: hidden;
   line-height: 1.5;
+}
+.d-progress {
+  margin-bottom: 16px;
+  color: #aaa;
 }
