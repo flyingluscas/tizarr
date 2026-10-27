@@ -1,4 +1,10 @@
 /* 1920x1080 TV layout. Chromium 63: no flexbox gap, no aspect-ratio (esbuild does not lower them). */
+/* Nunito (variable weight), bundled so the TV never waits on a web font. */
+@font-face {
+  font-family: 'Nunito';
+  font-weight: 200 1000;
+  src: url('fonts/nunito-latin.woff2') format('woff2');
+}
 * {
   box-sizing: border-box;
 }
@@ -10,7 +16,7 @@ body {
   overflow: hidden;
   background: #111;
   color: #eee;
-  font-family: sans-serif;
+  font-family: 'Nunito', sans-serif;
   font-size: 28px;
 }
 /* Fixed TV canvas; src/stage.js scales it to the window. */
@@ -47,7 +53,7 @@ body {
   font-weight: bold;
 }
 #sidebar button {
-  display: block;
+  display: flex;
   width: 100%;
   margin: 0 0 12px;
   border-color: transparent;
@@ -81,10 +87,14 @@ body {
 }
 h1 {
   font-size: 48px;
+  font-weight: 800;
   margin: 0 0 30px;
 }
 h2 {
-  font-size: 36px;
+  display: flex;
+  align-items: center;
+  font-size: 34px;
+  font-weight: 800;
   margin: 0 0 20px;
 }
 
@@ -94,14 +104,40 @@ button {
   color: inherit;
   background: #222;
   border: 4px solid #333;
-  border-radius: 10px;
-  padding: 14px 20px;
+  border-radius: 14px;
+  padding: 14px 22px;
   margin: 0 16px 16px 0;
   outline: none;
 }
 input {
   display: block;
   width: 100%;
+}
+button {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
+}
+/* Inline Lucide icons (src/ui/icons.js), sized to the text. */
+.icon {
+  display: inline-flex;
+  margin-right: 12px;
+}
+.icon svg {
+  width: 1.1em;
+  height: 1.1em;
+}
+.search-box {
+  position: relative;
+}
+.search-box .icon {
+  position: absolute;
+  top: 22px;
+  left: 24px;
+  color: #999;
+}
+.search-box input {
+  padding-left: 72px;
 }
 button:disabled {
   opacity: 0.6;
@@ -122,13 +158,23 @@ button:disabled {
 }
 .row input {
   flex: 1;
-}
-.columns {
-  display: flex;
+  min-width: 0;
 }
 .settings-group {
+  margin-bottom: 28px;
+  padding: 28px 32px 12px;
+  border-radius: 18px;
+  background: #181818;
+}
+.field-row {
+  display: flex;
+}
+.field {
   flex: 1;
-  margin-right: 50px;
+  margin-right: 40px;
+}
+.row .status {
+  margin-left: 8px;
 }
 .hint {
   color: #777;

@@ -6,6 +6,7 @@ import { t } from '../i18n.js';
 import { openOverlay, registerOverlay } from '../router.js';
 import { state } from '../state.js';
 import { describe, markInLibrary } from '../ui/card.js';
+import { iconSvg } from '../ui/icons.js';
 
 let selected = null;
 let sourceCard = null;
@@ -17,10 +18,13 @@ const BUTTON_LABELS = {
   inLibrary: 'details.inLibrary',
 };
 
+const BUTTON_ICONS = { done: 'done', inLibrary: 'done', error: 'error' };
+
 function setRequestState(status, message = '') {
   const button = $('#d-request');
-  button.textContent =
+  $('.label', button).textContent =
     status === 'error' ? t('details.retry', { message }) : t(BUTTON_LABELS[status]);
+  $('.icon', button).innerHTML = iconSvg(BUTTON_ICONS[status] || 'request');
   button.disabled = status === 'busy' || status === 'done' || status === 'inLibrary';
   button.classList.toggle('error', status === 'error');
 }

@@ -10,10 +10,12 @@ import { initSearch } from './screens/search.js';
 import { initSettings } from './screens/settings.js';
 import { fitStageToWindow } from './stage.js';
 import { state } from './state.js';
+import { renderIcons } from './ui/icons.js';
 
 fitStageToWindow($('#stage'));
 setLanguage(state.config.app.language);
 translatePage();
+renderIcons();
 
 initRouter();
 initSettings();

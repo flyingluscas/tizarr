@@ -120,11 +120,13 @@ src/
     card.js           poster card with status badge
     grid.js           renders cards in one DOM write, keeps focus on refresh
     lazy-images.js    loads <img data-src> near the viewport (IntersectionObserver)
+    icons.js          inline Lucide SVG icons, rendered into <span data-icon>
   screens/
     settings.js       language, region, TMDB key; per server URL/key, Test, defaults
     search.js         parallel lookups, poster grid
     library.js        Movies | Shows tabs with status
     details.js        overlay: overview and Request button
+  fonts/              Nunito variable font (woff2, latin) + its OFL license
   index.html          markup for all screens (text via data-i18n)
   style.css           1920×1080 TV layout
 tizen/
@@ -146,6 +148,10 @@ Patterns to follow:
 - **Data** that screens show goes through `state.cache.load(key, ttl, loader, onValue)` so
   reopening is instant; clear the cache when settings change.
 - **Images** in lists use `data-src` + `observeImages()`, never `src` directly.
+- **Icons:** `<span class="icon" data-icon="name"></span>` next to a `<span data-i18n>` label
+  (never put `data-i18n` on an element that also holds an icon; it would erase it). New icons:
+  copy the SVG's inner elements from Lucide into `src/ui/icons.js`.
+- **Font:** Nunito is bundled; do not load web fonts at runtime.
 - **Navigation:** focusable elements carry `data-nav`; clickable ones add
   `data-action="name"`, handled by the view's `actions` map. `nav.js` picks the nearest
   element in the arrow direction, so layout order is navigation order.

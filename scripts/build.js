@@ -18,6 +18,9 @@ const { version } = JSON.parse(await readFile('package.json', 'utf8'));
 async function copyStaticFiles() {
   await copyFile('src/index.html', `${OUT}/index.html`);
   await copyFile('tizen/icon.png', `${OUT}/icon.png`);
+  // The bundled font's license must ship with it (SIL OFL).
+  await mkdir(`${OUT}/fonts`, { recursive: true });
+  await copyFile('src/fonts/OFL.txt', `${OUT}/fonts/OFL.txt`);
   const manifest = await readFile('tizen/config.xml', 'utf8');
   await writeFile(`${OUT}/config.xml`, manifest.replace('version="0.0.0"', `version="${version}"`));
 }
@@ -40,6 +43,9 @@ const options = {
   target: TARGET,
   logLevel: 'warning',
   plugins: [copyStaticPlugin],
+  // Fonts referenced from style.css are emitted as files next to it.
+  loader: { '.woff2': 'file' },
+  assetNames: 'fonts/[name]',
   // Dev only: reload the page whenever esbuild finishes a rebuild.
   banner: dev
     ? { js: "new EventSource('/esbuild').addEventListener('change', () => location.reload());" }

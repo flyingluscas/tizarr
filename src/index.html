@@ -9,30 +9,48 @@
     <div id="stage">
       <nav id="sidebar">
         <div class="brand">Tizarr</div>
-        <button data-nav data-action="go" data-screen="search" data-i18n="nav.search"></button>
-        <button data-nav data-action="go" data-screen="library" data-i18n="nav.library"></button>
-        <button data-nav data-action="go" data-screen="settings" data-i18n="nav.settings"></button>
+        <button data-nav data-action="go" data-screen="search">
+          <span class="icon" data-icon="search"></span><span data-i18n="nav.search"></span>
+        </button>
+        <button data-nav data-action="go" data-screen="library">
+          <span class="icon" data-icon="library"></span><span data-i18n="nav.library"></span>
+        </button>
+        <button data-nav data-action="go" data-screen="settings">
+          <span class="icon" data-icon="settings"></span><span data-i18n="nav.settings"></span>
+        </button>
       </nav>
 
       <div id="settings" class="view">
         <h1 data-i18n="settings.title"></h1>
-        <div class="columns">
-          <section class="settings-group" data-group="app">
-            <h2 data-i18n="settings.general"></h2>
-            <div class="label" data-i18n="settings.language"></div>
-            <div class="chips" data-field="language"></div>
-            <div class="label" data-i18n="settings.region"></div>
-            <div class="chips" data-field="region"></div>
-            <div class="label" data-i18n="settings.tmdbKey"></div>
-            <input data-nav data-field="tmdbKey" type="text" />
-            <div class="row">
-              <button data-nav data-action="testTmdb" data-i18n="settings.test"></button
-              ><span class="status"></span>
+        <section class="settings-group" data-group="app">
+          <h2>
+            <span class="icon" data-icon="region"></span><span data-i18n="settings.general"></span>
+          </h2>
+          <div class="field-row">
+            <div class="field">
+              <div class="label" data-i18n="settings.language"></div>
+              <div class="chips" data-field="language"></div>
             </div>
-            <div class="hint" data-i18n="settings.tmdbHint"></div>
-          </section>
-          <section class="settings-group" data-group="sonarr">
-            <h2 data-i18n="settings.sonarr"></h2>
+            <div class="field">
+              <div class="label" data-i18n="settings.region"></div>
+              <div class="chips" data-field="region"></div>
+            </div>
+          </div>
+          <div class="label" data-i18n="settings.tmdbKey"></div>
+          <div class="row">
+            <input data-nav data-field="tmdbKey" type="text" />
+            <button data-nav data-action="testTmdb">
+              <span class="icon" data-icon="test"></span><span data-i18n="settings.test"></span>
+            </button>
+            <span class="status"></span>
+          </div>
+          <div class="hint" data-i18n="settings.tmdbHint"></div>
+        </section>
+        <section class="settings-group" data-group="sonarr">
+          <h2>
+            <span class="icon" data-icon="show"></span><span data-i18n="settings.sonarr"></span>
+          </h2>
+          <div class="row">
             <input data-nav data-field="url" type="text" placeholder="http://sonarr.lan" />
             <input
               data-nav
@@ -40,17 +58,21 @@
               type="text"
               data-i18n-placeholder="settings.apiKey"
             />
-            <div class="row">
-              <button data-nav data-action="test" data-i18n="settings.test"></button
-              ><span class="status"></span>
-            </div>
-            <div class="label" data-i18n="settings.qualityProfile"></div>
-            <div class="chips" data-field="qualityProfileId"></div>
-            <div class="label" data-i18n="settings.rootFolder"></div>
-            <div class="chips" data-field="rootFolderPath"></div>
-          </section>
-          <section class="settings-group" data-group="radarr">
-            <h2 data-i18n="settings.radarr"></h2>
+            <button data-nav data-action="test">
+              <span class="icon" data-icon="test"></span><span data-i18n="settings.test"></span>
+            </button>
+            <span class="status"></span>
+          </div>
+          <div class="label" data-i18n="settings.qualityProfile"></div>
+          <div class="chips" data-field="qualityProfileId"></div>
+          <div class="label" data-i18n="settings.rootFolder"></div>
+          <div class="chips" data-field="rootFolderPath"></div>
+        </section>
+        <section class="settings-group" data-group="radarr">
+          <h2>
+            <span class="icon" data-icon="movie"></span><span data-i18n="settings.radarr"></span>
+          </h2>
+          <div class="row">
             <input data-nav data-field="url" type="text" placeholder="http://radarr.lan" />
             <input
               data-nav
@@ -58,44 +80,41 @@
               type="text"
               data-i18n-placeholder="settings.apiKey"
             />
-            <div class="row">
-              <button data-nav data-action="test" data-i18n="settings.test"></button
-              ><span class="status"></span>
-            </div>
-            <div class="label" data-i18n="settings.qualityProfile"></div>
-            <div class="chips" data-field="qualityProfileId"></div>
-            <div class="label" data-i18n="settings.rootFolder"></div>
-            <div class="chips" data-field="rootFolderPath"></div>
-          </section>
-        </div>
+            <button data-nav data-action="test">
+              <span class="icon" data-icon="test"></span><span data-i18n="settings.test"></span>
+            </button>
+            <span class="status"></span>
+          </div>
+          <div class="label" data-i18n="settings.qualityProfile"></div>
+          <div class="chips" data-field="qualityProfileId"></div>
+          <div class="label" data-i18n="settings.rootFolder"></div>
+          <div class="chips" data-field="rootFolderPath"></div>
+        </section>
         <div class="row">
-          <button data-nav data-action="save" data-i18n="settings.save"></button
-          ><span id="settings-status" class="status"></span>
+          <button data-nav data-action="save">
+            <span class="icon" data-icon="save"></span><span data-i18n="settings.save"></span>
+          </button>
+          <span id="settings-status" class="status"></span>
         </div>
       </div>
 
       <div id="search" class="view">
-        <input id="query" data-nav type="text" data-i18n-placeholder="search.placeholder" />
+        <div class="search-box">
+          <span class="icon" data-icon="search"></span>
+          <input id="query" data-nav type="text" data-i18n-placeholder="search.placeholder" />
+        </div>
         <div id="search-notice" class="notice"></div>
         <div id="search-results" class="grid"></div>
       </div>
 
       <div id="library" class="view">
         <div class="tabs">
-          <button
-            class="tab"
-            data-nav
-            data-action="tab"
-            data-tab="movie"
-            data-i18n="library.movies"
-          ></button>
-          <button
-            class="tab"
-            data-nav
-            data-action="tab"
-            data-tab="show"
-            data-i18n="library.shows"
-          ></button>
+          <button class="tab" data-nav data-action="tab" data-tab="movie">
+            <span class="icon" data-icon="movie"></span><span data-i18n="library.movies"></span>
+          </button>
+          <button class="tab" data-nav data-action="tab" data-tab="show">
+            <span class="icon" data-icon="show"></span><span data-i18n="library.shows"></span>
+          </button>
         </div>
         <div id="library-notice" class="notice"></div>
         <div id="library-grid" class="grid"></div>
@@ -107,7 +126,9 @@
           <h1 id="d-title"></h1>
           <div id="d-meta"></div>
           <p id="d-overview"></p>
-          <button id="d-request" data-nav data-action="request"></button>
+          <button id="d-request" data-nav data-action="request">
+            <span class="icon" data-icon="request"></span><span class="label"></span>
+          </button>
         </div>
       </div>
     </div>
