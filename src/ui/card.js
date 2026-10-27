@@ -17,15 +17,6 @@ function badge(item) {
   return item.inLibrary ? el('span', 'badge', t('details.inLibrary')) : null;
 }
 
-/** Status sits under the title, off the poster, so it never hides the poster art. */
-function statusLine(item) {
-  const pill = badge(item);
-  if (!pill) return null;
-  const line = el('div', 'status-line');
-  line.appendChild(pill);
-  return line;
-}
-
 /** "★ 7.8" pill; the star is a fixed SVG, the number goes in as text. */
 export function ratingPill(rating) {
   const pill = el('span', 'rating');
@@ -42,7 +33,7 @@ export function renderCard(item, index) {
   card.dataset.action = 'open';
   card.dataset.index = String(index);
 
-  // Poster box: rating pill on top, status strip along the bottom, so they never overlap.
+  // Poster box: status pill top-left, rating bottom-right, so they never overlap.
   const poster = el('div', 'poster');
   if (item.poster) {
     const img = el('img');
@@ -50,15 +41,15 @@ export function renderCard(item, index) {
     img.alt = '';
     poster.appendChild(img);
   }
+  const status = badge(item);
+  if (status) poster.appendChild(status);
   if (item.rating) poster.appendChild(ratingPill(item.rating));
   card.appendChild(poster);
   card.appendChild(el('div', 'title', item.title));
   card.appendChild(el('div', 'meta', describe(item)));
-  const status = statusLine(item);
-  if (status) card.appendChild(status);
   return card;
 }
 
 export function markInLibrary(card) {
-  if (!$('.badge', card)) card.appendChild(statusLine({ inLibrary: true }));
+  if (!$('.badge', card)) $('.poster', card).appendChild(badge({ inLibrary: true }));
 }

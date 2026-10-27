@@ -263,13 +263,12 @@ button:disabled {
   font-size: 20px;
   color: #999;
 }
-/* Status pill under the title (see ui/card.js statusLine). */
-.status-line {
-  padding: 0 12px 12px;
-  margin-top: -4px;
-}
+/* Status pill in the poster's top-left corner; the rating sits bottom-right. */
 .badge {
-  display: inline-block;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  max-width: 220px;
   padding: 3px 10px;
   border-radius: 6px;
   background: #2e7d32;
@@ -282,7 +281,7 @@ button:disabled {
 }
 .rating {
   position: absolute;
-  top: 10px;
+  bottom: 10px;
   right: 10px;
   display: flex;
   align-items: center;
