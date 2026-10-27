@@ -75,7 +75,8 @@ their TV with their API keys in it.
   new network destination needs the owner's approval.
 - The app may only add titles (`POST` movie/series). Anything that deletes, unmonitors or
   changes settings on a user's server needs explicit owner approval.
-- API key fields stay masked (`type="password"`); never display a saved key in plain text.
+- API key fields stay masked (`class="secret"`, dots via `-webkit-text-security`; not
+  `type="password"`, which the TV keyboard may not open for); never show a saved key in plain text.
 - Do not add Tizen privileges in `tizen/config.xml` without approval. `<access origin="*">`
   is required because users' servers can be anywhere; do not widen anything else.
 
@@ -152,6 +153,7 @@ src/
   dom.js              $, $$, el, setStatus helpers
   stage.js            scales the fixed 1920×1080 canvas to the window
   nav.js              remote navigation: focus, arrows, Enter, Back, view switching
+  spatial.js          arrow-key targeting math (edge distances, pure + tested)
   router.js           sidebar screens, Details overlay, where Back goes
   data/
     http.js           JSON over XHR with timeout

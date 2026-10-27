@@ -109,6 +109,11 @@ input {
   display: block;
   width: 100%;
 }
+/* API keys: plain text inputs (the TV keyboard may not open for password fields), shown as
+   dots. */
+.secret {
+  -webkit-text-security: disc;
+}
 button {
   display: inline-flex;
   align-items: center;

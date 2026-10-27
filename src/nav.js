@@ -2,6 +2,7 @@
 // Each view registers its click actions and Back behaviour; this module routes keys to them.
 // Views flagged `sidebar` also let focus move into the persistent #sidebar.
 import { $, $$ } from './dom.js';
+import { pickNext } from './spatial.js';
 
 const KEY = {
   LEFT: 37,
@@ -14,9 +15,6 @@ const KEY = {
   IME_DONE: 65376,
   IME_CANCEL: 65385,
 };
-
-// Moving sideways costs more than moving straight, so focus prefers aligned elements.
-const SIDE_WEIGHT = 2;
 
 const views = {};
 // Actions available from any view (e.g. sidebar entries).
@@ -78,12 +76,9 @@ export function show(id, focusTarget) {
   setFocus(focusTarget || $(`#${id} [data-nav]`));
 }
 
-function center(node) {
-  const rect = node.getBoundingClientRect();
-  return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
-}
+const DIRECTIONS = { [KEY.LEFT]: 'left', [KEY.RIGHT]: 'right', [KEY.UP]: 'up', [KEY.DOWN]: 'down' };
 
-/** Focuses the nearest visible element in the pressed direction. */
+/** Focuses the nearest visible element in the pressed direction (see spatial.js). */
 function move(key) {
   const own = `#${current} [data-nav]`;
   const selector = views[current].sidebar ? `${own}, #sidebar [data-nav]` : own;
@@ -91,24 +86,10 @@ function move(key) {
   const focused = $('.focused');
   if (!focused || !candidates.includes(focused)) return setFocus(candidates[0]);
 
-  const from = center(focused);
-  const horizontal = key === KEY.LEFT || key === KEY.RIGHT;
-  let best = null;
-  let bestScore = Infinity;
-  for (const node of candidates) {
-    if (node === focused) continue;
-    const to = center(node);
-    const dx = to.x - from.x;
-    const dy = to.y - from.y;
-    const ahead = { [KEY.LEFT]: -dx, [KEY.RIGHT]: dx, [KEY.UP]: -dy, [KEY.DOWN]: dy }[key];
-    if (ahead <= 1) continue;
-    const score = ahead + SIDE_WEIGHT * Math.abs(horizontal ? dy : dx);
-    if (score < bestScore) {
-      bestScore = score;
-      best = node;
-    }
-  }
-  setFocus(best);
+  const others = candidates.filter((node) => node !== focused);
+  const rects = others.map((node) => node.getBoundingClientRect());
+  const next = pickNext(DIRECTIONS[key], focused.getBoundingClientRect(), rects);
+  if (next >= 0) setFocus(others[next]);
 }
 
 /** Leaving a text field fires `submit-input` on it when the user confirmed. */
