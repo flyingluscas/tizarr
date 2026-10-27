@@ -37,7 +37,8 @@ test('seriesStatus', () => {
   const stats = (have, total) => ({ statistics: { episodeFileCount: have, episodeCount: total } });
   assert.equal(seriesStatus(stats(10, 10), 5), 'downloading');
   assert.equal(seriesStatus(stats(10, 10)), 'downloaded');
-  assert.equal(seriesStatus(stats(3, 10)), 'missing');
+  assert.equal(seriesStatus(stats(3, 10)), 'partial');
+  assert.equal(seriesStatus(stats(0, 10)), 'missing');
   assert.equal(seriesStatus(stats(0, 0)), 'upcoming');
   assert.equal(seriesStatus({}), 'upcoming');
 });

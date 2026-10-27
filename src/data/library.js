@@ -32,7 +32,9 @@ export function seriesStatus(series, progress) {
   const stats = series.statistics || {};
   if (progress !== undefined) return 'downloading';
   if (!stats.episodeCount) return 'upcoming';
-  return stats.episodeFileCount >= stats.episodeCount ? 'downloaded' : 'missing';
+  const have = stats.episodeFileCount || 0;
+  if (have >= stats.episodeCount) return 'downloaded';
+  return have > 0 ? 'partial' : 'missing';
 }
 
 export function toLibraryItem(kind, raw, progressById) {

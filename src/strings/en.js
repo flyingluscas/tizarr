@@ -58,12 +58,12 @@ export default {
   'library.shows': 'Shows',
   'library.empty': 'Nothing here yet.',
   'library.loading': 'Loading…',
-  'library.episodes': '{have}/{total} episodes',
 
-  'status.downloaded': 'Downloaded',
+  'status.downloaded': 'In library',
   'status.downloading': 'Downloading {progress}%',
-  'status.missing': 'Missing',
-  'status.upcoming': 'Upcoming',
+  'status.partial': '{have}/{total} episodes',
+  'status.missing': 'Not found yet',
+  'status.upcoming': 'Not released yet',
 
   'kind.movie': 'Movie',
   'kind.show': 'Show',

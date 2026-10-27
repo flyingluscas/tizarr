@@ -14,7 +14,7 @@ export function setLanguage(code) {
   strings = (LANGUAGES[code] || LANGUAGES.en).strings;
 }
 
-/** t('library.episodes', { have: 3, total: 10 }) → "3/10 episodes". Falls back to English. */
+/** t('status.partial', { have: 3, total: 10 }) → "3/10 episodes". Falls back to English. */
 export function t(key, vars) {
   const text = strings[key] ?? en[key] ?? key;
   if (!vars) return text;

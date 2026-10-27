@@ -3,7 +3,7 @@
 
 // Bump when the shape of cached data changes (e.g. items gain a field), so values saved by
 // an older version are dropped instead of being shown without the new field.
-const CACHE_VERSION = 2;
+const CACHE_VERSION = 3;
 const BASE = 'tizarr.cache.';
 const PREFIX = `${BASE}v${CACHE_VERSION}.`;
 

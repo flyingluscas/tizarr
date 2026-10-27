@@ -263,18 +263,22 @@ button:disabled {
   font-size: 20px;
   color: #999;
 }
-/* Status strip along the bottom of the poster. */
+/* Status pill under the title (see ui/card.js statusLine). */
+.status-line {
+  padding: 0 12px 12px;
+  margin-top: -4px;
+}
 .badge {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 6px 10px;
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
   background: #2e7d32;
   color: #fff;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  text-align: center;
+}
+.status-partial {
+  background: #a86400;
 }
 .rating {
   position: absolute;

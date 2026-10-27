@@ -60,12 +60,12 @@ export default {
   'library.shows': 'Séries',
   'library.empty': 'Nada aqui ainda.',
   'library.loading': 'Carregando…',
-  'library.episodes': '{have}/{total} episódios',
 
-  'status.downloaded': 'Baixado',
+  'status.downloaded': 'Na biblioteca',
   'status.downloading': 'Baixando {progress}%',
-  'status.missing': 'Faltando',
-  'status.upcoming': 'Em breve',
+  'status.partial': '{have}/{total} episódios',
+  'status.missing': 'Ainda não encontrado',
+  'status.upcoming': 'Ainda não lançado',
 
   'kind.movie': 'Filme',
   'kind.show': 'Série',

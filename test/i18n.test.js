@@ -6,8 +6,8 @@ import en from '../src/strings/en.js';
 afterEach(() => setLanguage('en'));
 
 test('t interpolates variables and keeps unknown placeholders', () => {
-  assert.equal(t('library.episodes', { have: 3, total: 10 }), '3/10 episodes');
-  assert.equal(t('library.episodes', { have: 3 }), '3/{total} episodes');
+  assert.equal(t('status.partial', { have: 3, total: 10 }), '3/10 episodes');
+  assert.equal(t('status.partial', { have: 3 }), '3/{total} episodes');
 });
 
 test('t switches language and falls back to English, then to the key', () => {

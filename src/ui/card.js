@@ -3,18 +3,27 @@ import { $, el } from '../dom.js';
 import { t } from '../i18n.js';
 import { iconSvg } from './icons.js';
 
-/** "2022 · Show", or "2022 · 3/10 episodes" for library shows. */
+/** "2022 · Show" */
 export function describe(item) {
-  const second = item.episodes ? t('library.episodes', item.episodes) : t(`kind.${item.kind}`);
-  return [item.year, second].filter(Boolean).join(' · ');
+  return [item.year, t(`kind.${item.kind}`)].filter(Boolean).join(' · ');
 }
 
+/** Library status pill ("In library", "Downloading 40%", "3/10 episodes"…), or null. */
 function badge(item) {
   if (item.status) {
-    const text = t(`status.${item.status}`, { progress: item.progress || 0 });
-    return el('span', `badge status-${item.status}`, text);
+    const vars = { progress: item.progress || 0, ...item.episodes };
+    return el('span', `badge status-${item.status}`, t(`status.${item.status}`, vars));
   }
   return item.inLibrary ? el('span', 'badge', t('details.inLibrary')) : null;
+}
+
+/** Status sits under the title, off the poster, so it never hides the poster art. */
+function statusLine(item) {
+  const pill = badge(item);
+  if (!pill) return null;
+  const line = el('div', 'status-line');
+  line.appendChild(pill);
+  return line;
 }
 
 /** "★ 7.8" pill; the star is a fixed SVG, the number goes in as text. */
@@ -42,15 +51,14 @@ export function renderCard(item, index) {
     poster.appendChild(img);
   }
   if (item.rating) poster.appendChild(ratingPill(item.rating));
-  const status = badge(item);
-  if (status) poster.appendChild(status);
   card.appendChild(poster);
   card.appendChild(el('div', 'title', item.title));
   card.appendChild(el('div', 'meta', describe(item)));
+  const status = statusLine(item);
+  if (status) card.appendChild(status);
   return card;
 }
 
 export function markInLibrary(card) {
-  if (!$('.badge', card))
-    $('.poster', card).appendChild(el('span', 'badge', t('details.inLibrary')));
+  if (!$('.badge', card)) card.appendChild(statusLine({ inLibrary: true }));
 }
