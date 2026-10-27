@@ -13,8 +13,11 @@ const LATEST_RELEASE_URL = `https://api.github.com/repos/${REPO}/releases/latest
 const INSTALLER_SERVICE_ID = 'xvvl3S1bTI.InstallerService';
 const INSTALLER_URL = 'ws://localhost:8091';
 const EVENT = { INSTALL: 1, ERROR: 3, STATUS: 4 };
-// A freshly launched service needs a moment to listen and to check developer mode.
-const SERVICE_START_DELAY_MS = 3000;
+// After launching the service, keep trying to connect for a while (it takes a few seconds),
+// then give it a moment to check developer mode before it accepts installs.
+const SERVICE_START_TIMEOUT_MS = 10000;
+const CONNECT_RETRY_MS = 1000;
+const SERVICE_SETTLE_MS = 2000;
 // The service stays silent if a precondition fails, so don't wait forever.
 const INSTALL_TIMEOUT_MS = 3 * 60 * 1000;
 
@@ -62,12 +65,27 @@ export function interpretMessage({ type, payload }) {
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+/** Thrown when TizenBrew Installer's service is not running and could not be started. */
+export class ServiceDownError extends Error {}
+
 function connect() {
   return new Promise((resolve, reject) => {
     const socket = new WebSocket(INSTALLER_URL);
     socket.onopen = () => resolve(socket);
-    socket.onerror = () => reject(new Error('installer service not running'));
+    socket.onerror = () => reject(new ServiceDownError('installer service not running'));
   });
+}
+
+async function connectWithRetry() {
+  const deadline = Date.now() + SERVICE_START_TIMEOUT_MS;
+  for (;;) {
+    try {
+      return await connect();
+    } catch (error) {
+      if (Date.now() >= deadline) throw error;
+      await delay(CONNECT_RETRY_MS);
+    }
+  }
 }
 
 function startInstallerService() {
@@ -90,9 +108,14 @@ export async function installLatest(onStatus) {
   try {
     socket = await connect();
   } catch {
-    await startInstallerService();
-    await delay(SERVICE_START_DELAY_MS);
-    socket = await connect();
+    try {
+      await startInstallerService();
+    } catch {
+      // The TV reports "Unknown error" when launching another package's service even when
+      // the service does start, so ignore it and check by connecting.
+    }
+    socket = await connectWithRetry();
+    await delay(SERVICE_SETTLE_MS);
   }
   return new Promise((resolve, reject) => {
     const timer = setTimeout(

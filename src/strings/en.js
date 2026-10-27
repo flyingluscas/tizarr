@@ -31,6 +31,7 @@ export default {
   'updates.available': 'Update available',
   'updates.tvOnly': 'Updating works on the TV only.',
   'updates.failed': 'Update failed: {message}',
+  'updates.serviceDown': 'open TizenBrew Installer once, then try again.',
   'updates.status.working': 'Updating…',
   'updates.status.fetching': 'Downloading…',
   'updates.status.resigning': 'Signing…',

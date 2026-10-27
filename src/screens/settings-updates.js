@@ -1,5 +1,11 @@
 // The Updates block of Settings and the sidebar's "Update available" note.
-import { installLatest, installedVersion, isNewer, latestVersion } from '../data/updates.js';
+import {
+  ServiceDownError,
+  installLatest,
+  installedVersion,
+  isNewer,
+  latestVersion,
+} from '../data/updates.js';
 import { $, setStatus } from '../dom.js';
 import { t } from '../i18n.js';
 import { state } from '../state.js';
@@ -69,7 +75,8 @@ export async function installUpdate(button) {
     await installLatest((statusId) => setStatus(status, statusText(statusId)));
     setStatus(status, t('updates.status.installed'));
   } catch (error) {
-    setStatus(status, t('updates.failed', { message: error.message }), true);
+    const message = error instanceof ServiceDownError ? t('updates.serviceDown') : error.message;
+    setStatus(status, t('updates.failed', { message }), true);
     button.disabled = false;
   }
 }
