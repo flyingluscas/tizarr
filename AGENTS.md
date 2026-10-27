@@ -50,8 +50,52 @@ the latest GitHub release.
 
 ### Security
 
-- Never commit API keys, URLs of private servers or other secrets. The repo is public. Users
-  enter their settings on the TV; they are stored in `localStorage` only.
+This repo is public and most of its code is written by AI agents. Anyone can install the app
+and point it at their own servers. Treat every change as something a stranger will run on
+their TV with their API keys in it.
+
+#### Secrets and personal data
+
+- Never commit secrets: API keys, tokens, passwords, certificates or keystores (`*.p12`,
+  `*.pwd`), `.env` files, or anything copied from a real config.
+- Never commit details that identify the owner's setup: LAN IPs, hostnames (e.g. `*.lan`),
+  usernames, emails, server URLs or library contents.
+- Tests and examples use obviously fake values (`'test-key'`, `http://sonarr.example`).
+- Before every commit, check the staged diff (`git diff --cached`) for key-like strings, IPs
+  and private hostnames.
+- If a secret ever reaches git (even in a later-reverted commit), stop and tell the owner so
+  it can be rotated. Deleting it in a new commit is not enough: history is public.
+- Never put secrets in commit messages, PR or issue text, release notes or CI logs.
+
+#### Protecting the people who install it
+
+- Each server's API key is sent only to that server's own configured URL; the TMDB key only to
+  `api.themoviedb.org`. Keys are stored only in the TV's `localStorage` and never logged.
+- No telemetry, analytics, crash reporting, ads or calls to any other third party. Adding a
+  new network destination needs the owner's approval.
+- The app may only add titles (`POST` movie/series). Anything that deletes, unmonitors or
+  changes settings on a user's server needs explicit owner approval.
+- API key fields stay masked (`type="password"`); never display a saved key in plain text.
+- Do not add Tizen privileges in `tizen/config.xml` without approval. `<access origin="*">`
+  is required because users' servers can be anywhere; do not widen anything else.
+
+#### Code safety
+
+- Data from Sonarr, Radarr or TMDB (titles, overviews, error messages) is untrusted: render it
+  with `textContent` / `el()`, never `innerHTML`. `innerHTML` is only for fixed strings in the
+  code (like the icons in `src/ui/icons.js`).
+- Only put `https:` URLs (or URLs on the user's configured server) into `src`; never use
+  `javascript:` or `data:` URLs built from API data.
+- No `eval`, `new Function`, string `setTimeout`, or loading scripts/code from the network at
+  runtime. Everything the app runs ships inside the signed `.wgt`.
+
+#### Supply chain and CI
+
+- No runtime dependencies. New dev dependencies need approval; always commit the lockfile and
+  install with `npm ci`.
+- Pin third-party GitHub Actions to a full commit SHA, give workflows the least `permissions`
+  they need, and never echo secrets.
+- The signing certificate (`TIZEN_AUTHOR_P12`) is never exported, printed or replaced.
 
 ### Testing
 
