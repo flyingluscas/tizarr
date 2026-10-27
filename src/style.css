@@ -275,6 +275,33 @@ button:disabled {
   color: #fff;
   font-size: 20px;
 }
+.rating {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+}
+.rating .icon {
+  margin-right: 6px;
+  color: #f5c518;
+}
+.rating svg {
+  fill: currentColor;
+}
+/* In Details the pill sits inline before the year/kind text. */
+#d-meta .rating {
+  position: static;
+  display: inline-flex;
+  margin-right: 14px;
+  font-size: 26px;
+}
 .status-downloading {
   background: #1565c0;
 }

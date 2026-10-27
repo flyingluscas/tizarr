@@ -36,6 +36,7 @@ test('fromTmdb maps movies and shows to items', () => {
     year: '2021',
     overview: 'Spice.',
     poster: 'https://image.tmdb.org/t/p/w185/p.jpg',
+    rating: null,
     inLibrary: false,
     raw: null,
   });
@@ -43,4 +44,9 @@ test('fromTmdb maps movies and shows to items', () => {
   assert.equal(show.title, 'Severance');
   assert.equal(show.year, '2022');
   assert.equal(show.poster, '');
+});
+
+test('fromTmdb rounds the TMDB score and skips unrated titles', () => {
+  assert.equal(fromTmdb('movie', { id: 1, vote_average: 7.849, vote_count: 900 }).rating, 7.8);
+  assert.equal(fromTmdb('movie', { id: 1, vote_average: 0, vote_count: 0 }).rating, null);
 });

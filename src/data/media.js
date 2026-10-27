@@ -20,6 +20,22 @@ export function resizeTmdb(url, size) {
   return url.replace(/\/t\/p\/\w+\//, `/t/p/${size}/`);
 }
 
+const roundRating = (value) => Math.round(value * 10) / 10;
+
+/**
+ * One 0–10 score for a Radarr/Sonarr result: IMDb when Radarr has it, else TMDB (Radarr) or
+ * Sonarr's own score. Null when nobody has rated it yet.
+ */
+export function ratingOf(result) {
+  const ratings = result.ratings || {};
+  const score = [
+    ratings.imdb && ratings.imdb.value,
+    ratings.tmdb && ratings.tmdb.value,
+    ratings.value,
+  ].find((value) => typeof value === 'number' && value > 0);
+  return score ? roundRating(score) : null;
+}
+
 export function toItem(kind, result) {
   return {
     kind,
@@ -28,6 +44,7 @@ export function toItem(kind, result) {
     year: result.year || '',
     overview: result.overview || '',
     poster: posterUrl(result.images),
+    rating: ratingOf(result),
     inLibrary: (result.id || 0) > 0,
     raw: result,
   };

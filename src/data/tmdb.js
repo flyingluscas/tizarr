@@ -51,6 +51,10 @@ export function fromTmdb(kind, result) {
     year: date.slice(0, 4),
     overview: result.overview || '',
     poster: result.poster_path ? `${IMAGE_URL}${ROW_POSTER_SIZE}${result.poster_path}` : '',
+    rating:
+      result.vote_count > 0 && result.vote_average > 0
+        ? Math.round(result.vote_average * 10) / 10
+        : null,
     inLibrary: false,
     // Resolved through Radarr/Sonarr only when the user requests it (see resolve.js).
     raw: null,

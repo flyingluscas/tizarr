@@ -1,6 +1,7 @@
 // Poster card used in grids.
 import { $, el } from '../dom.js';
 import { t } from '../i18n.js';
+import { iconSvg } from './icons.js';
 
 /** "2022 · Show", or "2022 · 3/10 episodes" for library shows. */
 export function describe(item) {
@@ -14,6 +15,16 @@ function badge(item) {
     return el('span', `badge status-${item.status}`, text);
   }
   return item.inLibrary ? el('span', 'badge', t('details.inLibrary')) : null;
+}
+
+/** "★ 7.8" pill; the star is a fixed SVG, the number goes in as text. */
+export function ratingPill(rating) {
+  const pill = el('span', 'rating');
+  const star = el('span', 'icon');
+  star.innerHTML = iconSvg('star');
+  pill.appendChild(star);
+  pill.appendChild(document.createTextNode(rating.toFixed(1)));
+  return pill;
 }
 
 export function renderCard(item, index) {
@@ -32,6 +43,7 @@ export function renderCard(item, index) {
   }
   const status = badge(item);
   if (status) card.appendChild(status);
+  if (item.rating) card.appendChild(ratingPill(item.rating));
   card.appendChild(el('div', 'title', item.title));
   card.appendChild(el('div', 'meta', describe(item)));
   return card;

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { buildRequestBody, interleave, resizeTmdb, toItem } from '../src/data/media.js';
+import { buildRequestBody, interleave, ratingOf, resizeTmdb, toItem } from '../src/data/media.js';
 
 const movie = {
   title: 'Dune',
@@ -67,4 +67,13 @@ test('resizeTmdb swaps the TMDB size segment and leaves other URLs alone', () =>
   );
   const tvdb = 'https://artworks.thetvdb.com/banners/p.jpg';
   assert.equal(resizeTmdb(tvdb, 'w342'), tvdb);
+});
+
+test('ratingOf prefers IMDb, then TMDB, then Sonarr, and ignores missing scores', () => {
+  assert.equal(ratingOf({ ratings: { imdb: { value: 8.04 }, tmdb: { value: 7.5 } } }), 8);
+  assert.equal(ratingOf({ ratings: { imdb: { value: 0 }, tmdb: { value: 7.46 } } }), 7.5);
+  assert.equal(ratingOf({ ratings: { votes: 10, value: 8.7 } }), 8.7);
+  assert.equal(ratingOf({ ratings: { value: 0 } }), null);
+  assert.equal(ratingOf({}), null);
+  assert.equal(toItem('movie', { title: 'X', ratings: { imdb: { value: 6.12 } } }).rating, 6.1);
 });

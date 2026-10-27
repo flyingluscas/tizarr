@@ -8,7 +8,7 @@ import { $ } from '../dom.js';
 import { t } from '../i18n.js';
 import { openOverlay, registerOverlay } from '../router.js';
 import { state } from '../state.js';
-import { describe, markInLibrary } from '../ui/card.js';
+import { describe, markInLibrary, ratingPill } from '../ui/card.js';
 import { iconSvg } from '../ui/icons.js';
 
 const DETAILS_POSTER_SIZE = 'w342';
@@ -67,7 +67,9 @@ export function openDetails(item, card) {
   // Rows use small posters; Details shows a sharper one.
   $('#d-poster').src = item.poster && resizeTmdb(item.poster, DETAILS_POSTER_SIZE);
   $('#d-title').textContent = item.title;
-  $('#d-meta').textContent = describe(item);
+  const meta = $('#d-meta');
+  meta.textContent = describe(item);
+  if (item.rating) meta.insertBefore(ratingPill(item.rating), meta.firstChild);
   $('#d-overview').textContent = item.overview;
   setRequestState(item.inLibrary ? 'inLibrary' : 'ready');
   openOverlay('details', card);
