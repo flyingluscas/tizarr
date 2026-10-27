@@ -126,7 +126,7 @@ src/
     search.js         parallel lookups, poster grid
     library.js        Movies | Shows tabs with status
     details.js        overlay: overview and Request button
-  fonts/              Nunito variable font (woff2, latin) + its OFL license
+  fonts/              Roboto variable font (woff2, latin) + its OFL license
   index.html          markup for all screens (text via data-i18n)
   style.css           1920×1080 TV layout
 tizen/
@@ -151,7 +151,7 @@ Patterns to follow:
 - **Icons:** `<span class="icon" data-icon="name"></span>` next to a `<span data-i18n>` label
   (never put `data-i18n` on an element that also holds an icon; it would erase it). New icons:
   copy the SVG's inner elements from Lucide into `src/ui/icons.js`.
-- **Font:** Nunito is bundled; do not load web fonts at runtime.
+- **Font:** Roboto is bundled; do not load web fonts at runtime.
 - **Navigation:** focusable elements carry `data-nav`; clickable ones add
   `data-action="name"`, handled by the view's `actions` map. `nav.js` picks the nearest
   element in the arrow direction, so layout order is navigation order.
