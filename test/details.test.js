@@ -6,6 +6,7 @@ import {
   ratingsBreakdown,
   seasonNumbers,
   seasonProgress,
+  seasonRequest,
 } from '../src/data/details.js';
 
 const t = (key, vars) => (vars ? `${key}:${vars.count}` : key);
@@ -88,4 +89,10 @@ test('seasonProgress shows real seasons with episodes', () => {
     ],
   };
   assert.deepEqual(seasonProgress(series), ['S4 3/10']);
+});
+
+test('seasonRequest picks the Sonarr mode for the panel state', () => {
+  assert.deepEqual(seasonRequest('future', [1], [1, 2]), { preset: 'future' });
+  assert.deepEqual(seasonRequest('picked', [2, 1], [1, 2]), { preset: 'all' });
+  assert.deepEqual(seasonRequest('picked', [3, 1], [1, 2, 3]), { picked: [1, 3] });
 });

@@ -175,7 +175,8 @@ src/
     browse.js         Home, Movies, Shows: shelves that scroll sideways
     search.js         parallel lookups, poster grid
     library.js        Movies | Shows tabs with status
-    details.js        overlay: backdrop hero, facts, ratings, season picker, More like this
+    details.js        overlay: backdrop hero, facts, ratings, Request, More like this
+    details-seasons.js  Choose seasons panel (quick picks + one checkable row per season)
   fonts/              Roboto variable font (woff2, latin) + its OFL license
   index.html          markup for all screens (text via data-i18n)
   style.css           1920×1080 TV layout

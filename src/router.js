@@ -30,8 +30,8 @@ export function openScreen(id) {
 }
 
 /** Overlays (Details) cover the current screen but keep the sidebar reachable. */
-export function registerOverlay(id, { actions } = {}) {
-  registerView(id, { actions, sidebar: true, back: closeOverlay });
+export function registerOverlay(id, { actions, back = closeOverlay } = {}) {
+  registerView(id, { actions, sidebar: true, back });
 }
 
 export function openOverlay(id, returnFocus) {

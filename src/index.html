@@ -159,14 +159,27 @@
             <div id="d-ratings" class="d-ratings"></div>
             <p id="d-overview"></p>
             <div id="d-progress" class="d-progress"></div>
-            <div id="d-picker" hidden>
-              <div class="label" data-i18n="details.seasonsTitle"></div>
-              <div id="d-presets" class="chips"></div>
-              <div id="d-season-list" class="chips" hidden></div>
+            <div id="d-actions" class="row">
+              <button id="d-request" data-nav data-action="request">
+                <span class="icon" data-icon="request"></span><span class="label"></span>
+              </button>
+              <button id="d-choose" data-nav data-action="choose" hidden>
+                <span class="icon" data-icon="show"></span><span data-i18n="seasons.choose"></span>
+              </button>
             </div>
-            <button id="d-request" data-nav data-action="request">
-              <span class="icon" data-icon="request"></span><span class="label"></span>
-            </button>
+            <div id="d-panel" class="d-panel" hidden>
+              <div class="label" data-i18n="seasons.quick"></div>
+              <div id="d-quick" class="chips"></div>
+              <div id="d-season-rows"></div>
+              <div class="row">
+                <button id="d-panel-request" data-nav data-action="panelRequest">
+                  <span class="icon" data-icon="request"></span><span class="label"></span>
+                </button>
+                <button data-nav data-action="closePanel">
+                  <span data-i18n="seasons.cancel"></span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
         <section id="d-similar" class="shelf" hidden>

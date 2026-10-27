@@ -8,6 +8,10 @@
 * {
   box-sizing: border-box;
 }
+/* Many elements set display (flex, inline-flex); the hidden attribute must still win. */
+[hidden] {
+  display: none !important;
+}
 html,
 body {
   margin: 0;
@@ -387,6 +391,42 @@ button:disabled {
   max-height: 300px;
   overflow: hidden;
   line-height: 1.5;
+}
+.d-panel {
+  max-width: 900px;
+  margin-bottom: 16px;
+  padding: 24px 28px 8px;
+  border-radius: 18px;
+  background: rgba(24, 24, 24, 0.92);
+}
+.season-row {
+  display: flex;
+  width: 100%;
+  margin: 0 0 10px;
+  text-align: left;
+}
+.season-row .check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin-right: 16px;
+  border: 3px solid #777;
+  border-radius: 8px;
+}
+.season-row.checked .check {
+  border-color: #f5c518;
+  background: #f5c518;
+  color: #111;
+}
+.season-row .count {
+  margin-left: auto;
+  color: #999;
+  font-weight: 400;
+}
+.season-row.muted {
+  opacity: 0.45;
 }
 .d-progress {
   margin-bottom: 16px;

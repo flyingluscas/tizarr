@@ -88,6 +88,14 @@ export async function fetchRecommendations(app, kind, tmdbId) {
     .map((result) => fromTmdb(kind, result));
 }
 
+/** Map of season number → episode count (Sonarr doesn't know them before a show is added). */
+export async function fetchSeasonCounts(key, tmdbId) {
+  const show = await get(key, `/tv/${tmdbId}`);
+  const counts = new Map();
+  for (const season of show.seasons || []) counts.set(season.season_number, season.episode_count);
+  return counts;
+}
+
 /** TVDB id for a TMDB show (Sonarr looks shows up by TVDB id). */
 export async function tvdbIdFor(key, tmdbId) {
   const ids = await get(key, `/tv/${tmdbId}/external_ids`);

@@ -76,12 +76,9 @@ export function interleave(a, b) {
   return out;
 }
 
-/** Sonarr monitor presets offered in Details (values from Sonarr's MonitorTypes). */
-export const SEASON_PRESETS = ['all', 'lastSeason', 'future'];
-
 /**
  * The add request is the lookup result plus our defaults. For shows, `seasons` is either
- * { preset } (one of SEASON_PRESETS) or { picked: [seasonNumbers] }; picked seasons use
+ * { preset } (Sonarr MonitorTypes: 'all', 'lastSeason', 'future') or { picked: [seasonNumbers] }; picked seasons use
  * Sonarr's 'skip' mode, which keeps exactly the season flags we send.
  */
 export function buildRequestBody(kind, result, server, seasons = { preset: 'all' }) {

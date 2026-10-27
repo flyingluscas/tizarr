@@ -5,24 +5,28 @@ import { SERVER_NAMES, serverReady } from '../config.js';
 import { add, getSeriesById } from '../data/arr.js';
 import { factsOf, ratingsBreakdown, seasonNumbers, seasonProgress } from '../data/details.js';
 import { LIBRARY_CACHE_KEY } from '../data/library.js';
-import {
-  KINDS,
-  SEASON_PRESETS,
-  backdropOf,
-  buildRequestBody,
-  httpsOnly,
-  resizeTmdb,
-} from '../data/media.js';
+import { KINDS, backdropOf, buildRequestBody, httpsOnly, resizeTmdb } from '../data/media.js';
 import { resolveForRequest } from '../data/resolve.js';
 import { libraryIndex, withLibraryStatus } from '../data/shelves.js';
-import { fetchRecommendations } from '../data/tmdb.js';
-import { $, $$, el } from '../dom.js';
+import { fetchRecommendations, fetchSeasonCounts } from '../data/tmdb.js';
+import { $, el } from '../dom.js';
 import { t } from '../i18n.js';
-import { openOverlay, registerOverlay } from '../router.js';
+import { closeOverlay, openOverlay, registerOverlay } from '../router.js';
 import { state } from '../state.js';
 import { describe, markInLibrary, ratingPill, statusPill } from '../ui/card.js';
 import { renderGrid } from '../ui/grid.js';
 import { iconSvg } from '../ui/icons.js';
+import {
+  closePanel,
+  hideSeasons,
+  isPanelOpen,
+  openPanel,
+  panelChoice,
+  quickPick,
+  setEpisodeCounts,
+  setupSeasons,
+  toggleSeasonRow,
+} from './details-seasons.js';
 
 const DETAILS_POSTER_SIZE = 'w342';
 // Recommendations for a title rarely change.
@@ -31,9 +35,8 @@ const SIMILAR_TTL_MS = 6 * 60 * 60 * 1000;
 let selected = null;
 let sourceCard = null;
 let similar = [];
-// { preset } or { picked: [seasonNumbers] }, passed to buildRequestBody.
-let seasonChoice = { preset: 'all' };
-let pickedSeasons = [];
+// Unowned shows with several seasons say "Request all seasons" on the main button.
+let requestsAllSeasons = false;
 // Incremented on every open so late responses for a previous title are ignored.
 let openId = 0;
 
@@ -47,8 +50,11 @@ const BUTTON_ICONS = { done: 'done', inLibrary: 'done', error: 'error' };
 
 function setRequestState(status, message = '') {
   const button = $('#d-request');
+  const readyLabel = requestsAllSeasons ? 'seasons.requestAll' : BUTTON_LABELS.ready;
   $('.label', button).textContent =
-    status === 'error' ? t('details.retry', { message }) : t(BUTTON_LABELS[status]);
+    status === 'error'
+      ? t('details.retry', { message })
+      : t(status === 'ready' ? readyLabel : BUTTON_LABELS[status]);
   $('.icon', button).innerHTML = iconSvg(BUTTON_ICONS[status] || 'request');
   button.disabled = status === 'busy' || status === 'done' || status === 'inLibrary';
   button.classList.toggle('error', status === 'error');
@@ -89,51 +95,22 @@ function setBackdrop(url) {
   if (url) img.src = url;
 }
 
-function chip(label, action, value, isSelected) {
-  const node = el('button', 'chip', label);
-  node.dataset.nav = '';
-  node.dataset.action = action;
-  node.dataset.value = String(value);
-  node.classList.toggle('selected', isSelected);
-  return node;
-}
-
-function renderSeasonPicker(raw) {
+function showSeasonChoice(item, raw) {
   const numbers = seasonNumbers(raw);
-  const picker = $('#d-picker');
-  picker.hidden = numbers.length === 0;
-  if (!numbers.length) return;
-  seasonChoice = { preset: 'all' };
-  pickedSeasons = numbers.slice();
-
-  const presets = $('#d-presets');
-  presets.textContent = '';
-  for (const preset of SEASON_PRESETS.concat('pick')) {
-    presets.appendChild(chip(t(`seasons.${preset}`), 'preset', preset, preset === 'all'));
-  }
-  const list = $('#d-season-list');
-  list.textContent = '';
-  list.hidden = true;
-  for (const number of numbers) {
-    list.appendChild(chip(t('seasons.season', { number }), 'season', number, true));
-  }
-}
-
-function selectPreset(node) {
-  const preset = node.dataset.value;
-  seasonChoice = preset === 'pick' ? { picked: pickedSeasons } : { preset };
-  for (const other of $$('#d-presets .chip')) other.classList.toggle('selected', other === node);
-  $('#d-season-list').hidden = preset !== 'pick';
-}
-
-function toggleSeason(node) {
-  const number = Number(node.dataset.value);
-  const on = !node.classList.contains('selected');
-  node.classList.toggle('selected', on);
-  pickedSeasons = on
-    ? pickedSeasons.concat(number).sort((a, b) => a - b)
-    : pickedSeasons.filter((value) => value !== number);
-  seasonChoice = { picked: pickedSeasons };
+  setupSeasons(numbers);
+  requestsAllSeasons = numbers.length > 1;
+  setRequestState('ready');
+  const { tmdbKey } = state.config.app;
+  const tmdbId = item.tmdbId || raw.tmdbId;
+  if (!tmdbKey || !tmdbId || numbers.length < 2) return;
+  const id = openId;
+  fetchSeasonCounts(tmdbKey, tmdbId)
+    .then((counts) => {
+      if (id === openId) setEpisodeCounts(counts);
+    })
+    .catch(() => {
+      // Counts are a nice-to-have; rows still work without them.
+    });
 }
 
 async function renderProgress(item, raw, id) {
@@ -184,7 +161,7 @@ async function enrich(item, id) {
     if (!$('#d-backdrop').src || $('#d-backdrop').hidden) setBackdrop(backdropOf(raw));
     renderStatus(item);
     if (item.inLibrary) setRequestState('inLibrary');
-    else if (item.kind === 'show') renderSeasonPicker(raw);
+    else if (item.kind === 'show') showSeasonChoice(item, raw);
     renderSimilar(item, item.tmdbId || raw.tmdbId, id);
     await renderProgress(item, raw, id);
   } catch {
@@ -193,16 +170,13 @@ async function enrich(item, id) {
   }
 }
 
-async function requestSelected() {
+/** Requests the selected title; for shows `seasons` comes from the panel (default: all). */
+async function requestSelected(seasons = { preset: 'all' }) {
   const item = selected;
   const name = KINDS[item.kind].server;
   const server = state.config[name];
   if (!serverReady(server)) {
     setRequestState('error', t('error.notConfigured', { server: SERVER_NAMES[name] }));
-    return;
-  }
-  if (seasonChoice.picked && !seasonChoice.picked.length) {
-    setRequestState('error', t('seasons.pickOne'));
     return;
   }
   setRequestState('busy');
@@ -212,12 +186,12 @@ async function requestSelected() {
     if (raw.id > 0) {
       item.inLibrary = true;
     } else {
-      await add(server, item.kind, buildRequestBody(item.kind, raw, server, seasonChoice));
+      await add(server, item.kind, buildRequestBody(item.kind, raw, server, seasons));
       item.inLibrary = true;
       state.cache.invalidate(LIBRARY_CACHE_KEY);
     }
     if (sourceCard) markInLibrary(sourceCard);
-    $('#d-picker').hidden = true;
+    hideSeasons();
     setRequestState(raw.id > 0 ? 'inLibrary' : 'done');
   } catch (error) {
     setRequestState('error', error.message);
@@ -238,13 +212,23 @@ export function openDetails(item, card) {
   setText('#d-progress', '');
   renderRatings(item, null);
   renderStatus(item);
-  $('#d-picker').hidden = true;
-  seasonChoice = { preset: 'all' };
+  hideSeasons();
+  requestsAllSeasons = false;
   setRequestState(item.inLibrary ? 'inLibrary' : 'ready');
 
   openOverlay('details', sourceCard);
   $('#details').scrollTop = 0;
   enrich(item, id);
+}
+
+function requestFromPanel() {
+  const choice = panelChoice();
+  if (!choice) {
+    $('#d-panel-request .label').textContent = t('seasons.pickOne');
+    return;
+  }
+  closePanel();
+  requestSelected(choice);
 }
 
 function openSimilar(card) {
@@ -254,10 +238,15 @@ function openSimilar(card) {
 export function initDetails() {
   registerOverlay('details', {
     actions: {
-      request: requestSelected,
-      preset: selectPreset,
-      season: toggleSeason,
+      request: () => requestSelected(),
+      choose: openPanel,
+      quick: quickPick,
+      seasonRow: toggleSeasonRow,
+      panelRequest: requestFromPanel,
+      closePanel,
       open: openSimilar,
     },
+    // Back closes the season panel first, then Details.
+    back: () => (isPanelOpen() ? closePanel() : closeOverlay()),
   });
 }

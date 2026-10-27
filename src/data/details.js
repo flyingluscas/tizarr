@@ -73,3 +73,13 @@ export function seasonProgress(series) {
         `S${season.seasonNumber} ${season.statistics.episodeFileCount || 0}/${season.statistics.episodeCount}`,
     );
 }
+
+/**
+ * What a season choice sends to Sonarr: future episodes only, every season (the 'all'
+ * preset), or the hand-picked seasons.
+ */
+export function seasonRequest(mode, picked, all) {
+  if (mode === 'future') return { preset: 'future' };
+  if (picked.length === all.length) return { preset: 'all' };
+  return { picked: picked.slice().sort((a, b) => a - b) };
+}
