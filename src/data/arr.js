@@ -63,3 +63,35 @@ export async function getQueue(server) {
   const page = await request(server, 'GET', `/api/v3/queue?pageSize=${QUEUE_PAGE_SIZE}`);
   return page.records || [];
 }
+
+/** Queue records with their movie, or series + episode, attached. */
+export async function getQueueWithTitles(server, kind) {
+  const include = kind === 'movie' ? 'includeMovie=true' : 'includeSeries=true&includeEpisode=true';
+  const page = await request(server, 'GET', `/api/v3/queue?pageSize=${QUEUE_PAGE_SIZE}&${include}`);
+  return page.records || [];
+}
+
+/** Sonarr episodes airing between two ISO dates. */
+export function getCalendar(server, start, end) {
+  return request(server, 'GET', `/api/v3/calendar?start=${start}&end=${end}&includeSeries=true`);
+}
+
+// Destructive calls. AGENTS.md allows only these, and only after an on-screen confirmation.
+
+/**
+ * Removes downloads from the client. With `blocklist`, the release is blocklisted and the
+ * server searches for another one (skipRedownload=false).
+ */
+export function removeQueueItems(server, ids, { blocklist }) {
+  const query = `removeFromClient=true&blocklist=${blocklist}&skipRedownload=false`;
+  return request(server, 'DELETE', `/api/v3/queue/bulk?${query}`, { ids });
+}
+
+/** Removes a movie/series from Radarr/Sonarr and deletes its files from disk. */
+export function deleteTitle(server, kind, id) {
+  const path =
+    kind === 'movie'
+      ? `/api/v3/movie/${id}?deleteFiles=true&addImportExclusion=false`
+      : `/api/v3/series/${id}?deleteFiles=true&addImportListExclusion=false`;
+  return request(server, 'DELETE', path);
+}

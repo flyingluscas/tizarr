@@ -5,6 +5,7 @@ export default {
   'nav.shows': 'Séries',
   'nav.search': 'Buscar',
   'nav.library': 'Biblioteca',
+  'nav.downloads': 'Downloads',
   'nav.settings': 'Configurações',
 
   'settings.title': 'Configurações',
@@ -94,6 +95,32 @@ export default {
   'seasons.cancel': 'Cancelar',
   'seasons.season': 'Temporada {number}',
   'seasons.pickOne': 'escolha pelo menos uma temporada',
+
+  'downloads.empty': 'Nada sendo baixado.',
+  'downloads.upcoming': 'Estreando nos próximos 14 dias',
+  'downloads.noUpcoming': 'Nenhum episódio estreando em breve.',
+  'downloads.left': 'faltam {size}',
+  'downloads.status.downloading': 'Baixando',
+  'downloads.status.queued': 'Na fila',
+  'downloads.status.paused': 'Pausado',
+  'downloads.status.delay': 'Adiado',
+  'downloads.status.warning': 'Precisa de atenção',
+  'downloads.status.completed': 'Importando',
+  'manage.chooseTitle': 'O que você quer fazer com {title}?',
+  'manage.tryAnother': 'Tentar outro lançamento',
+  'manage.tryAnotherTitle': 'Tentar outro lançamento de {title}?',
+  'manage.tryAnotherMessage':
+    'O download atual é removido e o lançamento vai para a lista de bloqueio. O {server} mantém o título e procura outro lançamento.',
+  'manage.searching': 'Procurando outro lançamento…',
+  'manage.delete': 'Excluir',
+  'manage.deleteTitle': 'Excluir {title}?',
+  'manage.deleteMessage':
+    'Isso remove do {server} e apaga os arquivos do disco. Não dá para desfazer.',
+  'manage.cancelDelete': 'Cancelar e excluir',
+  'manage.cancelDeleteTitle': 'Cancelar e excluir {title}?',
+  'manage.cancelDeleteMessage':
+    'Isso para o download, remove do {server} e apaga os arquivos já baixados. Não dá para desfazer.',
+  'dialog.cancel': 'Cancelar',
 
   'error.unreachable': 'inacessível',
   'error.badKey': 'chave da API inválida (veja Configurações)',

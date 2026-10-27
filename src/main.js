@@ -6,11 +6,13 @@ import { startNavigation } from './nav.js';
 import { initRouter, openScreen } from './router.js';
 import { initBrowse } from './screens/browse.js';
 import { initDetails } from './screens/details.js';
+import { initDownloads } from './screens/downloads.js';
 import { initLibrary } from './screens/library.js';
 import { initSearch } from './screens/search.js';
 import { initSettings } from './screens/settings.js';
 import { fitStageToWindow } from './stage.js';
 import { state } from './state.js';
+import { initDialog } from './ui/dialog.js';
 import { renderIcons } from './ui/icons.js';
 
 fitStageToWindow($('#stage'));
@@ -24,6 +26,8 @@ initBrowse();
 initSearch();
 initLibrary();
 initDetails();
+initDownloads();
+initDialog();
 startNavigation();
 
 openScreen(isConfigValid(state.config) ? 'home' : 'settings');

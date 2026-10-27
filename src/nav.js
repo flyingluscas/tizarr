@@ -78,6 +78,10 @@ function scrollIntoComfort(target) {
   else if (below < 0) view.scrollTop -= below;
 }
 
+export function currentView() {
+  return current;
+}
+
 export function setFocus(target) {
   if (!target) return;
   for (const node of $$('.focused')) node.classList.remove('focused');

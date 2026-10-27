@@ -24,6 +24,9 @@
         <button data-nav data-action="go" data-screen="library">
           <span class="icon" data-icon="library"></span><span data-i18n="nav.library"></span>
         </button>
+        <button data-nav data-action="go" data-screen="downloads">
+          <span class="icon" data-icon="downloads"></span><span data-i18n="nav.downloads"></span>
+        </button>
         <button data-nav data-action="go" data-screen="settings">
           <span class="icon" data-icon="settings"></span><span data-i18n="nav.settings"></span>
         </button>
@@ -148,6 +151,28 @@
         <div id="library-grid" class="grid"></div>
       </div>
 
+      <div id="downloads" class="view">
+        <h1 data-i18n="nav.downloads"></h1>
+        <div id="downloads-notice" class="notice"></div>
+        <div id="downloads-list"></div>
+        <h2 class="section-title" data-i18n="downloads.upcoming"></h2>
+        <div id="downloads-upcoming"></div>
+        <div
+          id="downloads-no-upcoming"
+          class="notice"
+          data-i18n="downloads.noUpcoming"
+          hidden
+        ></div>
+      </div>
+
+      <div id="dialog" class="view">
+        <div class="dialog-box">
+          <h1 id="dialog-title"></h1>
+          <p id="dialog-message"></p>
+          <div id="dialog-buttons" class="row"></div>
+        </div>
+      </div>
+
       <div id="details" class="view">
         <div class="backdrop"><img id="d-backdrop" alt="" /></div>
         <div class="d-hero">
@@ -166,6 +191,16 @@
               <button id="d-choose" data-nav data-action="choose" hidden>
                 <span class="icon" data-icon="show"></span><span data-i18n="seasons.choose"></span>
               </button>
+            </div>
+            <div id="d-manage" class="row" hidden>
+              <button id="d-another" data-nav data-action="tryAnother" hidden>
+                <span class="icon" data-icon="refresh"></span
+                ><span data-i18n="manage.tryAnother"></span>
+              </button>
+              <button id="d-delete" class="danger" data-nav data-action="deleteTitle">
+                <span class="icon" data-icon="trash"></span><span class="label"></span>
+              </button>
+              <span id="d-manage-status" class="status"></span>
             </div>
             <div id="d-panel" class="d-panel" hidden>
               <div class="label" data-i18n="seasons.quick"></div>

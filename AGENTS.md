@@ -35,7 +35,7 @@ the latest GitHub release.
 - Build DOM lists with a `DocumentFragment` and insert once. Avoid layout thrashing (reading
   layout inside write loops).
 - Keep network payloads and images small (e.g. TMDB `w342` posters, capped result counts).
-- Watch the bundle size (`dist/app.js`, ~30 KB today). Justify any big jump.
+- Watch the bundle size (`dist/app.js`, ~50 KB today). Justify any big jump.
 
 ### Tizen 5.0 compatibility (Chromium 63)
 
@@ -73,8 +73,14 @@ their TV with their API keys in it.
   `api.themoviedb.org`. Keys are stored only in the TV's `localStorage` and never logged.
 - No telemetry, analytics, crash reporting, ads or calls to any other third party. Adding a
   new network destination needs the owner's approval.
-- The app may only add titles (`POST` movie/series). Anything that deletes, unmonitors or
-  changes settings on a user's server needs explicit owner approval.
+- The app may add titles (`POST` movie/series). The owner approved exactly three destructive
+  actions, each only after the on-screen confirmation in `src/ui/dialog.js` (safe option
+  first and focused): **Try another release** (remove queue items + blocklist, the server
+  searches again), **Cancel and delete** and **Delete** (remove queue items, then remove the
+  title with `deleteFiles=true`). They live in `src/data/arr.js` / `src/data/downloads.js`.
+  Anything else that deletes, unmonitors or changes settings on a user's server still needs
+  explicit owner approval.
+- Tests and smoke checks never send real destructive requests: intercept every non-GET call.
 - API key fields stay masked (`class="secret"`, dots via `-webkit-text-security`; not
   `type="password"`, which the TV keyboard may not open for); never show a saved key in plain text.
 - Do not add Tizen privileges in `tizen/config.xml` without approval. `<access origin="*">`
@@ -165,16 +171,19 @@ src/
     media.js          movie/show kinds, mapping lookup results, request bodies (pure)
     library.js        library + queue → items with status (pure helpers + loader)
     cache.js          memory + localStorage cache with TTL, stale-while-revalidate
+    downloads.js      queue grouped per title, upcoming episodes, cancel/try-another/delete
   ui/
     card.js           poster card with status badge
     grid.js           renders cards in one DOM write, keeps focus on refresh
     lazy-images.js    loads <img data-src> near the viewport (IntersectionObserver)
     icons.js          inline Lucide SVG icons, rendered into <span data-icon>
+    dialog.js         full-screen choice/confirmation used before destructive actions
   screens/
     settings.js       language, region, TMDB key; per server URL/key, Test, defaults
     browse.js         Home, Movies, Shows: shelves that scroll sideways
     search.js         parallel lookups, poster grid
     library.js        Movies | Shows tabs with status
+    downloads.js      live queue (5 s refresh while visible) + airing soon
     details.js        overlay: backdrop hero, facts, ratings, Request, More like this
     details-seasons.js  Choose seasons panel (quick picks + one checkable row per season)
   fonts/              Roboto variable font (woff2, latin) + its OFL license
@@ -221,7 +230,8 @@ Patterns to follow:
 
 Sonarr and Radarr v3, header `X-Api-Key`: `system/status`, `qualityprofile`, `rootfolder`,
 `series/lookup` / `movie/lookup` (also `tmdb:<id>` / `tvdb:<id>` terms), `series`, `movie`,
-`series/{id}` (per-season statistics), `queue`, Radarr
+`series/{id}` (per-season statistics), `queue` (`includeMovie` / `includeSeries`), `calendar`,
+`DELETE queue/bulk`, `DELETE movie/{id}` / `DELETE series/{id}`, Radarr
 `importlist/movie?includeRecommendations=true`, `POST series` / `POST movie`.
 
 TMDB v3 (`api_key` query param): `configuration`, `trending/{movie|tv}/week`,

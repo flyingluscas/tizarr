@@ -30,6 +30,11 @@ export function openScreen(id) {
 }
 
 /** Overlays (Details) cover the current screen but keep the sidebar reachable. */
+/** Re-opens the current screen so it reloads its data (e.g. after deleting a title). */
+export function refreshScreen() {
+  openScreen(currentScreen);
+}
+
 export function registerOverlay(id, { actions, back = closeOverlay } = {}) {
   registerView(id, { actions, sidebar: true, back });
 }

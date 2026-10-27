@@ -5,6 +5,7 @@ export default {
   'nav.shows': 'Shows',
   'nav.search': 'Search',
   'nav.library': 'Library',
+  'nav.downloads': 'Downloads',
   'nav.settings': 'Settings',
 
   'settings.title': 'Settings',
@@ -92,6 +93,32 @@ export default {
   'seasons.cancel': 'Cancel',
   'seasons.season': 'Season {number}',
   'seasons.pickOne': 'pick at least one season',
+
+  'downloads.empty': 'Nothing is downloading.',
+  'downloads.upcoming': 'Airing in the next 14 days',
+  'downloads.noUpcoming': 'No episodes airing soon.',
+  'downloads.left': '{size} left',
+  'downloads.status.downloading': 'Downloading',
+  'downloads.status.queued': 'Queued',
+  'downloads.status.paused': 'Paused',
+  'downloads.status.delay': 'Delayed',
+  'downloads.status.warning': 'Needs attention',
+  'downloads.status.completed': 'Importing',
+  'manage.chooseTitle': 'What do you want to do with {title}?',
+  'manage.tryAnother': 'Try another release',
+  'manage.tryAnotherTitle': 'Try another release of {title}?',
+  'manage.tryAnotherMessage':
+    'The current download is removed and its release blocklisted. {server} keeps the title and searches for a different release.',
+  'manage.searching': 'Searching for another release…',
+  'manage.delete': 'Delete',
+  'manage.deleteTitle': 'Delete {title}?',
+  'manage.deleteMessage':
+    'This removes it from {server} and deletes its files from disk. It cannot be undone.',
+  'manage.cancelDelete': 'Cancel and delete',
+  'manage.cancelDeleteTitle': 'Cancel and delete {title}?',
+  'manage.cancelDeleteMessage':
+    'This stops the download, removes it from {server} and deletes any downloaded files. It cannot be undone.',
+  'dialog.cancel': 'Cancel',
 
   'error.unreachable': 'unreachable',
   'error.badKey': 'invalid API key (check Settings)',

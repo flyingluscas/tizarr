@@ -9,9 +9,9 @@ import { KINDS, backdropOf, buildRequestBody, httpsOnly, resizeTmdb } from '../d
 import { resolveForRequest } from '../data/resolve.js';
 import { libraryIndex, withLibraryStatus } from '../data/shelves.js';
 import { fetchRecommendations, fetchSeasonCounts } from '../data/tmdb.js';
-import { $, el } from '../dom.js';
+import { $, el, setStatus } from '../dom.js';
 import { t } from '../i18n.js';
-import { closeOverlay, openOverlay, registerOverlay } from '../router.js';
+import { closeOverlay, openOverlay, refreshScreen, registerOverlay } from '../router.js';
 import { state } from '../state.js';
 import { describe, markInLibrary, ratingPill, statusPill } from '../ui/card.js';
 import { renderGrid } from '../ui/grid.js';
@@ -27,6 +27,7 @@ import {
   setupSeasons,
   toggleSeasonRow,
 } from './details-seasons.js';
+import { confirmCancelAndDelete, confirmTryAnother } from './downloads.js';
 
 const DETAILS_POSTER_SIZE = 'w342';
 // Recommendations for a title rarely change.
@@ -37,6 +38,8 @@ let sourceCard = null;
 let similar = [];
 // Unowned shows with several seasons say "Request all seasons" on the main button.
 let requestsAllSeasons = false;
+// { kind, titleId, title } of the owned title Details can delete / re-search.
+let manageTarget = null;
 // Incremented on every open so late responses for a previous title are ignored.
 let openId = 0;
 
@@ -93,6 +96,34 @@ function setBackdrop(url) {
   const img = $('#d-backdrop');
   img.hidden = !url;
   if (url) img.src = url;
+}
+
+/** Try another release / Delete for titles already in Radarr/Sonarr. */
+function showManage(item, raw) {
+  const downloading = item.status === 'downloading';
+  $('#d-manage').hidden = false;
+  $('#d-another').hidden = !downloading;
+  $('#d-delete .label').textContent = t(downloading ? 'manage.cancelDelete' : 'manage.delete');
+  setStatus($('#d-manage-status'), '');
+  manageTarget = { kind: item.kind, titleId: raw.id, title: item.title };
+}
+
+async function runManage(action) {
+  const status = $('#d-manage-status');
+  const server = SERVER_NAMES[KINDS[manageTarget.kind].server];
+  try {
+    if (action === 'another') {
+      if (await confirmTryAnother(manageTarget, server)) setStatus(status, t('manage.searching'));
+      return;
+    }
+    const downloading = !$('#d-another').hidden;
+    if (await confirmCancelAndDelete(manageTarget, server, downloading)) {
+      closeOverlay();
+      refreshScreen();
+    }
+  } catch (error) {
+    setStatus(status, error.message, true);
+  }
 }
 
 function showSeasonChoice(item, raw) {
@@ -160,8 +191,10 @@ async function enrich(item, id) {
     if (!item.overview) setText('#d-overview', raw.overview || '');
     if (!$('#d-backdrop').src || $('#d-backdrop').hidden) setBackdrop(backdropOf(raw));
     renderStatus(item);
-    if (item.inLibrary) setRequestState('inLibrary');
-    else if (item.kind === 'show') showSeasonChoice(item, raw);
+    if (item.inLibrary) {
+      setRequestState('inLibrary');
+      if (raw.id > 0) showManage(item, raw);
+    } else if (item.kind === 'show') showSeasonChoice(item, raw);
     renderSimilar(item, item.tmdbId || raw.tmdbId, id);
     await renderProgress(item, raw, id);
   } catch {
@@ -213,6 +246,7 @@ export function openDetails(item, card) {
   renderRatings(item, null);
   renderStatus(item);
   hideSeasons();
+  $('#d-manage').hidden = true;
   requestsAllSeasons = false;
   setRequestState(item.inLibrary ? 'inLibrary' : 'ready');
 
@@ -244,6 +278,8 @@ export function initDetails() {
       seasonRow: toggleSeasonRow,
       panelRequest: requestFromPanel,
       closePanel,
+      tryAnother: () => runManage('another'),
+      deleteTitle: () => runManage('delete'),
       open: openSimilar,
     },
     // Back closes the season panel first, then Details.

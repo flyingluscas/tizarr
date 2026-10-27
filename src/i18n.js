@@ -9,9 +9,16 @@ export const LANGUAGES = {
 };
 
 let strings = en;
+let language = 'en';
 
 export function setLanguage(code) {
-  strings = (LANGUAGES[code] || LANGUAGES.en).strings;
+  language = LANGUAGES[code] ? code : 'en';
+  strings = LANGUAGES[language].strings;
+}
+
+/** Current language code, for Intl formatting (dates). */
+export function currentLanguage() {
+  return language;
 }
 
 /** t('status.partial', { have: 3, total: 10 }) → "3/10 episodes". Falls back to English. */
