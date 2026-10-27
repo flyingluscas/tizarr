@@ -280,8 +280,18 @@ button:disabled {
   font-size: 18px;
   font-weight: 700;
 }
+/* Status colors; "In library" keeps the default green. */
+.status-downloading {
+  background: #1565c0;
+}
 .status-partial {
   background: #a86400;
+}
+.status-missing {
+  background: #8e2c2c;
+}
+.status-upcoming {
+  background: #6a3fa0;
 }
 .rating {
   position: absolute;
