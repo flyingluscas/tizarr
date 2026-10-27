@@ -63,7 +63,7 @@ export default {
   'status.downloading': 'Downloading {progress}%',
   'status.partial': '{have}/{total} episodes',
   'status.missing': 'Not found yet',
-  'status.upcoming': 'Not released yet',
+  'status.upcoming': 'Upcoming',
 
   'kind.movie': 'Movie',
   'kind.show': 'Show',
