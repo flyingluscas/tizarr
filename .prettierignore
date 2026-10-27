@@ -1,3 +1,4 @@
 dist/
+dist-dev/
 docs/
 package-lock.json

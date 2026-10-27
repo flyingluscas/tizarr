@@ -131,7 +131,7 @@ tizen/
   config.xml          Tizen manifest (version is injected at build)
   icon.png            app icon
 scripts/
-  build.js            esbuild bundle → dist/ (`--dev`: watch + serve + live reload)
+  build.js            esbuild bundle → dist/ (`--dev`: watch + serve + live reload, in dist-dev/)
   validate.js         checks on dist/
   sign.exp            signs dist/ into a .wgt in CI (Tizen CLI prompts need expect)
 test/                 node:test unit tests

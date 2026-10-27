@@ -1,16 +1,18 @@
 // Bundles src/ into dist/, the exact folder that gets signed into tizarr.wgt.
-// `--dev` instead watches src/, serves dist/ on the LAN and live-reloads the browser.
+// `--dev` instead watches src/, builds into dist-dev/, serves it on the LAN and
+// live-reloads the browser.
 import { build, context } from 'esbuild';
 import { copyFile, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 
 // Tizen 5.0 ships Chromium 63; esbuild lowers newer syntax to it.
 const TARGET = 'chrome63';
-const OUT = 'dist';
 // 0.0.0.0 so other machines on the LAN can open the preview.
 const DEV_HOST = '0.0.0.0';
 const DEV_PORT = 5173;
 
 const dev = process.argv.includes('--dev');
+// Separate folders so `npm run build`/`validate` never clobber a running dev preview.
+const OUT = dev ? 'dist-dev' : 'dist';
 const { version } = JSON.parse(await readFile('package.json', 'utf8'));
 
 async function copyStaticFiles() {

@@ -19,7 +19,7 @@ const UNSUPPORTED_GLOBALS = [
 ];
 
 export default [
-  { ignores: ['dist/', 'docs/'] },
+  { ignores: ['dist/', 'dist-dev/', 'docs/'] },
   js.configs.recommended,
   {
     files: ['src/**/*.js'],
