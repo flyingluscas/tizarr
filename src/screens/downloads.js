@@ -39,11 +39,26 @@ function describeProgress(item) {
   return parts.join(' · ');
 }
 
-function renderRow(item, index) {
+const rowKey = (item) => `${item.kind}:${item.titleId}`;
+
+/** Text and bar that change between refreshes; the poster never does. */
+function updateRow(row, item, index) {
+  row.dataset.index = String(index);
+  const subtitle = item.episodes
+    ? t('seasons.episodes', { count: item.episodes })
+    : String(item.year || '');
+  $('.download-kind', row).textContent = [subtitle, t(`kind.${item.kind}`)]
+    .filter(Boolean)
+    .join(' · ');
+  $('.progress span', row).style.width = `${item.progress}%`;
+  $('.download-progress', row).textContent = describeProgress(item);
+}
+
+function createRow(item) {
   const row = el('button', 'download-row');
   row.dataset.nav = '';
   row.dataset.action = 'download';
-  row.dataset.index = String(index);
+  row.dataset.key = rowKey(item);
   const thumb = el('div', 'thumb');
   if (item.poster) {
     const img = el('img');
@@ -53,38 +68,45 @@ function renderRow(item, index) {
   }
   row.appendChild(thumb);
   const info = el('div', 'download-info');
-  const subtitle = item.episodes
-    ? t('seasons.episodes', { count: item.episodes })
-    : String(item.year || '');
   info.appendChild(el('div', 'title', item.title));
-  info.appendChild(
-    el('div', 'meta', [subtitle, t(`kind.${item.kind}`)].filter(Boolean).join(' · ')),
-  );
+  info.appendChild(el('div', 'meta download-kind'));
   const bar = el('div', 'progress');
-  const fill = el('span');
-  fill.style.width = `${item.progress}%`;
-  bar.appendChild(fill);
+  bar.appendChild(el('span'));
   info.appendChild(bar);
-  info.appendChild(el('div', 'meta', describeProgress(item)));
+  info.appendChild(el('div', 'meta download-progress'));
   row.appendChild(info);
   return row;
 }
 
+/**
+ * Updates rows in place, keyed by title, so posters aren't recreated (and reloaded) on every
+ * refresh; rows are only added or removed when downloads start or finish. Moving an existing
+ * node keeps it focused and keeps its image.
+ */
 function renderList(result) {
   const list = $('#downloads-list');
-  const focused = $('.focused', list);
-  const focusedIndex = focused ? Number(focused.dataset.index) : -1;
+  const existing = new Map();
+  for (const row of Array.from(list.children)) existing.set(row.dataset.key, row);
   items = result.items;
-  const fragment = document.createDocumentFragment();
-  items.forEach((item, index) => fragment.appendChild(renderRow(item, index)));
-  list.textContent = '';
-  list.appendChild(fragment);
-  observeImages(list);
+  const fresh = [];
+  items.forEach((item, index) => {
+    let row = existing.get(rowKey(item));
+    existing.delete(rowKey(item));
+    if (!row) {
+      row = createRow(item);
+      fresh.push(row);
+    }
+    updateRow(row, item, index);
+    list.appendChild(row);
+  });
+  // Rows left over belong to finished/removed downloads.
+  const lostFocus = Array.from(existing.values()).some((row) => row.classList.contains('focused'));
+  existing.forEach((row) => row.remove());
+  if (fresh.length) observeImages(list);
+  if (lostFocus && list.firstChild) setFocus(list.firstChild);
+
   const message = result.errors.join(' · ') || (items.length ? '' : t('downloads.empty'));
   setStatus($('#downloads-notice'), message, result.errors.length > 0);
-  if (focusedIndex >= 0 && list.children.length) {
-    setFocus(list.children[Math.min(focusedIndex, list.children.length - 1)]);
-  }
 }
 
 function renderUpcoming(episodes) {
