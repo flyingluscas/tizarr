@@ -33,24 +33,24 @@ export function renderCard(item, index) {
   card.dataset.action = 'open';
   card.dataset.index = String(index);
 
+  // Poster box: rating pill on top, status strip along the bottom, so they never overlap.
+  const poster = el('div', 'poster');
   if (item.poster) {
     const img = el('img');
     img.dataset.src = item.poster;
     img.alt = '';
-    card.appendChild(img);
-  } else {
-    card.appendChild(el('div', 'noposter'));
+    poster.appendChild(img);
   }
+  if (item.rating) poster.appendChild(ratingPill(item.rating));
   const status = badge(item);
-  if (status) card.appendChild(status);
-  if (item.rating) card.appendChild(ratingPill(item.rating));
+  if (status) poster.appendChild(status);
+  card.appendChild(poster);
   card.appendChild(el('div', 'title', item.title));
   card.appendChild(el('div', 'meta', describe(item)));
   return card;
 }
 
 export function markInLibrary(card) {
-  if (!$('.badge', card)) {
-    card.insertBefore(el('span', 'badge', t('details.inLibrary')), card.children[1]);
-  }
+  if (!$('.badge', card))
+    $('.poster', card).appendChild(el('span', 'badge', t('details.inLibrary')));
 }

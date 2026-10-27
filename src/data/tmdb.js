@@ -4,8 +4,8 @@ import { requestJson } from './http.js';
 
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_URL = 'https://image.tmdb.org/t/p/';
-// Small posters for rows; Details upsizes them (see media.js resizeTmdb).
-const ROW_POSTER_SIZE = 'w185';
+// Row posters are 240 px wide; w185 would be upscaled and blurry on a TV.
+const ROW_POSTER_SIZE = 'w342';
 // One page is 20 titles, enough for a row.
 const MAX_ITEMS = 20;
 

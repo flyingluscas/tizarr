@@ -195,9 +195,10 @@ Patterns to follow:
   `openOverlay(id, returnFocus)`. Back on a screen focuses the sidebar, then exits.
   Screens never import each other in cycles; shared UI goes in `src/ui/`.
 - **Data** that screens show goes through `state.cache.load(key, ttl, loader, onValue)` so
-  reopening is instant; clear the cache when settings change.
-- **Images** in lists use `data-src` + `observeImages()`, never `src` directly. Rows use
-  TMDB `w185` posters and Details `w342` (`resizeTmdb`).
+  reopening is instant; clear the cache when settings change. When cached data changes shape
+  (items gain a field), bump `CACHE_VERSION` in `src/data/cache.js`.
+- **Images** in lists use `data-src` + `observeImages()`, never `src` directly. Posters
+  are TMDB `w342` (`resizeTmdb`).
 - **Shelves** are declared in `src/data/shelves.js`; add a row there, not in the screen.
   TMDB shelves are hidden without a TMDB key, and empty shelves are hidden.
 - **Icons:** `<span class="icon" data-icon="name"></span>` next to a `<span data-i18n>` label

@@ -1,10 +1,23 @@
 // Memory + localStorage cache with expiry, so screens can draw saved data instantly and
 // refresh it in the background (stale-while-revalidate).
 
-const PREFIX = 'tizarr.cache.';
+// Bump when the shape of cached data changes (e.g. items gain a field), so values saved by
+// an older version are dropped instead of being shown without the new field.
+const CACHE_VERSION = 2;
+const BASE = 'tizarr.cache.';
+const PREFIX = `${BASE}v${CACHE_VERSION}.`;
+
+function storageKeys(storage) {
+  const keys = [];
+  for (let i = 0; i < storage.length; i++) keys.push(storage.key(i));
+  return keys.filter(Boolean);
+}
 
 export function createCache({ storage = localStorage, now = Date.now } = {}) {
   const memory = new Map();
+  for (const key of storageKeys(storage)) {
+    if (key.indexOf(BASE) === 0 && key.indexOf(PREFIX) !== 0) storage.removeItem(key);
+  }
 
   function read(key) {
     if (memory.has(key)) return memory.get(key);
@@ -57,9 +70,7 @@ export function createCache({ storage = localStorage, now = Date.now } = {}) {
 
   function clear() {
     memory.clear();
-    const keys = [];
-    for (let i = 0; i < storage.length; i++) keys.push(storage.key(i));
-    for (const key of keys) if (key && key.indexOf(PREFIX) === 0) storage.removeItem(key);
+    for (const key of storageKeys(storage)) if (key.indexOf(PREFIX) === 0) storage.removeItem(key);
   }
 
   return { get, set, load, invalidate, clear };

@@ -35,7 +35,7 @@ test('fromTmdb maps movies and shows to items', () => {
     title: 'Dune',
     year: '2021',
     overview: 'Spice.',
-    poster: 'https://image.tmdb.org/t/p/w185/p.jpg',
+    poster: 'https://image.tmdb.org/t/p/w342/p.jpg',
     rating: null,
     inLibrary: false,
     raw: null,

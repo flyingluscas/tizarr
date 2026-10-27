@@ -20,7 +20,7 @@ import { openDetails } from './details.js';
 
 // Trending/popular lists change slowly; refreshing a few times a day is plenty.
 const SHELF_TTL_MS = 6 * 60 * 60 * 1000;
-const ROW_POSTER_SIZE = 'w185';
+const ROW_POSTER_SIZE = 'w342';
 
 function createBrowseScreen(id) {
   let shelves = [];

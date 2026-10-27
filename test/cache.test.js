@@ -100,3 +100,14 @@ test('clear removes only cache entries', () => {
   assert.equal(cache.get('a'), null);
   assert.equal(storage.getItem('tizarr.config'), '{}');
 });
+
+test('entries saved by an older cache version are dropped on start', () => {
+  const { storage } = setup();
+  storage.setItem('tizarr.cache.library', '{"value":1,"expires":9999}');
+  storage.setItem('tizarr.config', '{}');
+  const cache = createCache({ storage, now: () => 1000 });
+  assert.equal(storage.getItem('tizarr.cache.library'), null);
+  assert.equal(storage.getItem('tizarr.config'), '{}');
+  cache.set('a', 1, 100);
+  assert.deepEqual(createCache({ storage, now: () => 1000 }).get('a'), { value: 1, fresh: true });
+});
