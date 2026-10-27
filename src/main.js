@@ -8,6 +8,7 @@ import { initDetails } from './screens/details.js';
 import { initLibrary } from './screens/library.js';
 import { initSearch } from './screens/search.js';
 import { initSettings } from './screens/settings.js';
+import { checkForUpdatesDaily } from './screens/settings-updates.js';
 import { fitStageToWindow } from './stage.js';
 import { state } from './state.js';
 import { renderIcons } from './ui/icons.js';
@@ -25,3 +26,4 @@ initDetails();
 startNavigation();
 
 openScreen(isConfigValid(state.config) ? 'library' : 'settings');
+checkForUpdatesDaily();

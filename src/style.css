@@ -8,6 +8,10 @@
 * {
   box-sizing: border-box;
 }
+/* Buttons are inline-flex; make sure the hidden attribute still hides them. */
+[hidden] {
+  display: none !important;
+}
 html,
 body {
   margin: 0;
@@ -41,6 +45,15 @@ body {
 }
 .view {
   margin-left: 300px;
+}
+.update-badge {
+  position: absolute;
+  bottom: 40px;
+  left: 44px;
+  display: flex;
+  align-items: center;
+  color: #f5c518;
+  font-size: 22px;
 }
 .brand {
   margin: 0 0 40px 20px;

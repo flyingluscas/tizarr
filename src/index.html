@@ -18,6 +18,10 @@
         <button data-nav data-action="go" data-screen="settings">
           <span class="icon" data-icon="settings"></span><span data-i18n="nav.settings"></span>
         </button>
+        <div id="update-badge" class="update-badge" hidden>
+          <span class="icon" data-icon="downloads"></span
+          ><span data-i18n="updates.available"></span>
+        </div>
       </nav>
 
       <div id="settings" class="view">
@@ -98,6 +102,21 @@
           </button>
           <span id="settings-status" class="status"></span>
         </div>
+        <section class="settings-group">
+          <h2>
+            <span class="icon" data-icon="downloads"></span><span data-i18n="updates.title"></span>
+          </h2>
+          <div id="update-version" class="label"></div>
+          <div class="row">
+            <button data-nav data-action="checkUpdate">
+              <span class="icon" data-icon="refresh"></span><span data-i18n="updates.check"></span>
+            </button>
+            <button id="update-install" data-nav data-action="installUpdate" hidden>
+              <span class="icon" data-icon="downloads"></span><span class="label"></span>
+            </button>
+            <span id="update-status" class="status"></span>
+          </div>
+        </section>
       </div>
 
       <div id="search" class="view">
