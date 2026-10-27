@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { buildRequestBody, interleave, toItem } from '../src/data/media.js';
+import { buildRequestBody, interleave, resizeTmdb, toItem } from '../src/data/media.js';
 
 const movie = {
   title: 'Dune',
@@ -58,4 +58,13 @@ test('buildRequestBody adds show defaults', () => {
   assert.equal(body.tvdbId, 9);
   assert.equal(body.seasonFolder, true);
   assert.deepEqual(body.addOptions, { monitor: 'all', searchForMissingEpisodes: true });
+});
+
+test('resizeTmdb swaps the TMDB size segment and leaves other URLs alone', () => {
+  assert.equal(
+    resizeTmdb('https://image.tmdb.org/t/p/w185/p.jpg', 'w342'),
+    'https://image.tmdb.org/t/p/w342/p.jpg',
+  );
+  const tvdb = 'https://artworks.thetvdb.com/banners/p.jpg';
+  assert.equal(resizeTmdb(tvdb, 'w342'), tvdb);
 });

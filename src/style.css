@@ -206,6 +206,30 @@ button:disabled {
   margin: 10px 0;
   color: #999;
 }
+/* Shelves: titled rows of posters that scroll sideways (nav.js keeps focus in view). */
+.shelf {
+  margin-bottom: 18px;
+}
+.shelf h2 {
+  font-size: 30px;
+  margin: 0 0 10px;
+}
+.shelf-track {
+  display: flex;
+  overflow: hidden;
+  /* Room for the focus outline, which the overflow would otherwise clip. */
+  padding: 8px;
+  margin: 0 -8px;
+}
+.shelf-track .card {
+  flex: 0 0 auto;
+  width: 200px;
+  margin: 0 22px 0 0;
+}
+.shelf-track .card img,
+.shelf-track .card .noposter {
+  height: 300px;
+}
 .grid {
   display: flex;
   flex-wrap: wrap;

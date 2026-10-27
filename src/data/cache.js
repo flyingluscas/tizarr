@@ -50,6 +50,11 @@ export function createCache({ storage = localStorage, now = Date.now } = {}) {
     }
   }
 
+  function invalidate(key) {
+    memory.delete(key);
+    storage.removeItem(PREFIX + key);
+  }
+
   function clear() {
     memory.clear();
     const keys = [];
@@ -57,5 +62,5 @@ export function createCache({ storage = localStorage, now = Date.now } = {}) {
     for (const key of keys) if (key && key.indexOf(PREFIX) === 0) storage.removeItem(key);
   }
 
-  return { get, set, load, clear };
+  return { get, set, load, invalidate, clear };
 }

@@ -36,6 +36,21 @@ export function registerGlobalActions(actions) {
 
 // Keep the focused element this far (design px) from the top/bottom edge of its screen.
 const SCROLL_MARGIN = 160;
+// Inside a shelf, keep part of the neighbouring posters visible.
+const SHELF_SCROLL_MARGIN = 80;
+
+/** Scrolls a shelf sideways so its focused card is fully visible with some margin. */
+function scrollShelf(target) {
+  const track = target.closest('.shelf-track');
+  if (!track) return;
+  const trackRect = track.getBoundingClientRect();
+  const rect = target.getBoundingClientRect();
+  const scale = trackRect.width / track.clientWidth || 1;
+  const before = (rect.left - trackRect.left) / scale - SHELF_SCROLL_MARGIN;
+  const after = (trackRect.right - rect.right) / scale - SHELF_SCROLL_MARGIN;
+  if (before < 0) track.scrollLeft += before;
+  else if (after < 0) track.scrollLeft -= after;
+}
 
 /**
  * Scrolls the screen so the focused element sits comfortably inside it, and all the way to the
@@ -67,6 +82,7 @@ export function setFocus(target) {
   if (!target) return;
   for (const node of $$('.focused')) node.classList.remove('focused');
   target.classList.add('focused');
+  scrollShelf(target);
   scrollIntoComfort(target);
 }
 

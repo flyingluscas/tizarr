@@ -35,7 +35,7 @@ the latest GitHub release.
 - Build DOM lists with a `DocumentFragment` and insert once. Avoid layout thrashing (reading
   layout inside write loops).
 - Keep network payloads and images small (e.g. TMDB `w342` posters, capped result counts).
-- Watch the bundle size (`dist/app.js`, ~20 KB today). Justify any big jump.
+- Watch the bundle size (`dist/app.js`, ~30 KB today). Justify any big jump.
 
 ### Tizen 5.0 compatibility (Chromium 63)
 
@@ -158,7 +158,9 @@ src/
   data/
     http.js           JSON over XHR with timeout
     arr.js            Sonarr/Radarr v3 client (translated errors)
-    tmdb.js           TMDB v3 client (optional key)
+    tmdb.js           TMDB v3 client (optional key): lists, genres, TVDB ids
+    shelves.js        which rows each browse screen shows and how to fill them (pure + loader)
+    resolve.js        discovery title → Radarr/Sonarr lookup result, before requesting
     media.js          movie/show kinds, mapping lookup results, request bodies (pure)
     library.js        library + queue → items with status (pure helpers + loader)
     cache.js          memory + localStorage cache with TTL, stale-while-revalidate
@@ -169,6 +171,7 @@ src/
     icons.js          inline Lucide SVG icons, rendered into <span data-icon>
   screens/
     settings.js       language, region, TMDB key; per server URL/key, Test, defaults
+    browse.js         Home, Movies, Shows: shelves that scroll sideways
     search.js         parallel lookups, poster grid
     library.js        Movies | Shows tabs with status
     details.js        overlay: overview and Request button
@@ -193,7 +196,10 @@ Patterns to follow:
   Screens never import each other in cycles; shared UI goes in `src/ui/`.
 - **Data** that screens show goes through `state.cache.load(key, ttl, loader, onValue)` so
   reopening is instant; clear the cache when settings change.
-- **Images** in lists use `data-src` + `observeImages()`, never `src` directly.
+- **Images** in lists use `data-src` + `observeImages()`, never `src` directly. Rows use
+  TMDB `w185` posters and Details `w342` (`resizeTmdb`).
+- **Shelves** are declared in `src/data/shelves.js`; add a row there, not in the screen.
+  TMDB shelves are hidden without a TMDB key, and empty shelves are hidden.
 - **Icons:** `<span class="icon" data-icon="name"></span>` next to a `<span data-i18n>` label
   (never put `data-i18n` on an element that also holds an icon; it would erase it). New icons:
   copy the SVG's inner elements from Lucide into `src/ui/icons.js`.
@@ -208,5 +214,10 @@ Patterns to follow:
 ## APIs used
 
 Sonarr and Radarr v3, header `X-Api-Key`: `system/status`, `qualityprofile`, `rootfolder`,
-`series/lookup` / `movie/lookup`, `POST series` / `POST movie`. Both servers send
-`Access-Control-Allow-Origin: *`, so the app calls them directly.
+`series/lookup` / `movie/lookup` (also `tmdb:<id>` / `tvdb:<id>` terms), `series`, `movie`,
+`queue`, Radarr `importlist/movie?includeRecommendations=true`, `POST series` / `POST movie`.
+
+TMDB v3 (`api_key` query param): `configuration`, `trending/{movie|tv}/week`,
+`{movie|tv}/popular`, `{movie|tv}/top_rated`, `discover/{movie|tv}`, `tv/{id}/external_ids`.
+
+All of them send `Access-Control-Allow-Origin: *`, so the app calls them directly.

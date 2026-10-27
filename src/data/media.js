@@ -15,9 +15,15 @@ export function posterUrl(images = []) {
   return poster ? poster.remoteUrl.replace(TMDB_ORIGINAL, TMDB_CARD_SIZE) : '';
 }
 
+/** Swaps the size segment of a TMDB image URL ("…/t/p/w185/x.jpg" → "…/t/p/w342/x.jpg"). */
+export function resizeTmdb(url, size) {
+  return url.replace(/\/t\/p\/\w+\//, `/t/p/${size}/`);
+}
+
 export function toItem(kind, result) {
   return {
     kind,
+    tmdbId: result.tmdbId || null,
     title: result.title,
     year: result.year || '',
     overview: result.overview || '',

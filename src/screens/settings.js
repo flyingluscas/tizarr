@@ -112,7 +112,7 @@ function save() {
   resetLibrary();
   setLanguage(draft.app.language);
   translatePage();
-  openScreen('library');
+  openScreen('home');
 }
 
 function fillForm() {

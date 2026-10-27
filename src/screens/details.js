@@ -1,12 +1,17 @@
 // Details overlay: poster, overview and the one-click Request button.
 import { add } from '../data/arr.js';
-import { KINDS, buildRequestBody } from '../data/media.js';
+import { SERVER_NAMES, serverReady } from '../config.js';
+import { LIBRARY_CACHE_KEY } from '../data/library.js';
+import { KINDS, buildRequestBody, resizeTmdb } from '../data/media.js';
+import { resolveForRequest } from '../data/resolve.js';
 import { $ } from '../dom.js';
 import { t } from '../i18n.js';
 import { openOverlay, registerOverlay } from '../router.js';
 import { state } from '../state.js';
 import { describe, markInLibrary } from '../ui/card.js';
 import { iconSvg } from '../ui/icons.js';
+
+const DETAILS_POSTER_SIZE = 'w342';
 
 let selected = null;
 let sourceCard = null;
@@ -31,13 +36,26 @@ function setRequestState(status, message = '') {
 
 async function requestSelected() {
   const item = selected;
-  const server = state.config[KINDS[item.kind].server];
+  const name = KINDS[item.kind].server;
+  const server = state.config[name];
+  if (!serverReady(server)) {
+    setRequestState('error', t('error.notConfigured', { server: SERVER_NAMES[name] }));
+    return;
+  }
   setRequestState('busy');
   try {
-    await add(server, item.kind, buildRequestBody(item.kind, item.raw, server));
-    item.inLibrary = true;
+    // Titles from discovery rows are looked up in Radarr/Sonarr first.
+    const raw = await resolveForRequest(item, state.config);
+    item.raw = raw;
+    if (raw.id > 0) {
+      item.inLibrary = true;
+    } else {
+      await add(server, item.kind, buildRequestBody(item.kind, raw, server));
+      item.inLibrary = true;
+      state.cache.invalidate(LIBRARY_CACHE_KEY);
+    }
     markInLibrary(sourceCard);
-    setRequestState('done');
+    setRequestState(raw.id > 0 ? 'inLibrary' : 'done');
   } catch (error) {
     setRequestState('error', error.message);
   }
@@ -46,7 +64,8 @@ async function requestSelected() {
 export function openDetails(item, card) {
   selected = item;
   sourceCard = card;
-  $('#d-poster').src = item.poster;
+  // Rows use small posters; Details shows a sharper one.
+  $('#d-poster').src = item.poster && resizeTmdb(item.poster, DETAILS_POSTER_SIZE);
   $('#d-title').textContent = item.title;
   $('#d-meta').textContent = describe(item);
   $('#d-overview').textContent = item.overview;

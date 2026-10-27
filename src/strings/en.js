@@ -1,5 +1,8 @@
 // English UI text. Every key here must also exist in the other language files.
 export default {
+  'nav.home': 'Home',
+  'nav.movies': 'Movies',
+  'nav.shows': 'Shows',
   'nav.search': 'Search',
   'nav.library': 'Library',
   'nav.settings': 'Settings',
@@ -28,6 +31,25 @@ export default {
   'region.CA': 'Canada',
   'region.ES': 'Spain',
 
+  'shelf.downloading': 'Downloading now',
+  'shelf.trending': 'Trending this week',
+  'shelf.popular': 'Popular',
+  'shelf.popularMovies': 'Popular movies',
+  'shelf.popularShows': 'Popular shows',
+  'shelf.recommended': 'Recommended for you',
+  'shelf.recent': 'Recently added',
+  'shelf.topRated': 'Top rated',
+  'shelf.topRatedMovies': 'Top rated movies',
+  'shelf.topRatedShows': 'Top rated shows',
+  'genre.action': 'Action',
+  'genre.comedy': 'Comedy',
+  'genre.drama': 'Drama',
+  'genre.scifi': 'Sci-Fi',
+  'genre.animation': 'Animation',
+  'genre.documentary': 'Documentary',
+  'home.tmdbHint': 'Add a TMDB key in Settings to see trending, popular and genre rows.',
+  'home.tmdbError': 'Could not load TMDB rows (check the key in Settings).',
+
   'search.placeholder': 'Search movies and shows',
   'search.searching': 'Searching…',
   'search.noResults': 'No results.',
@@ -54,5 +76,6 @@ export default {
 
   'error.unreachable': 'unreachable',
   'error.badKey': 'invalid API key (check Settings)',
+  'error.notFound': 'not found on the server',
   'error.notConfigured': 'Set up {server} in Settings.',
 };

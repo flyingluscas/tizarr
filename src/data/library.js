@@ -63,6 +63,15 @@ async function loadSide(server, kind, getItems, idField) {
   return sortByAdded(list.map((raw) => toLibraryItem(kind, raw, progress)));
 }
 
+export const LIBRARY_CACHE_KEY = 'library';
+// Short: statuses (downloading, downloaded) change often, but reopening should be instant.
+const LIBRARY_TTL_MS = 2 * 60 * 1000;
+
+/** Cached library shared by every screen (see cache.load for the callback contract). */
+export function watchLibrary(cache, config, onValue) {
+  return cache.load(LIBRARY_CACHE_KEY, LIBRARY_TTL_MS, () => loadLibrary(config), onValue);
+}
+
 /** { movies, shows, errors } — one failing server does not hide the other's titles. */
 export async function loadLibrary(config) {
   const errors = [];

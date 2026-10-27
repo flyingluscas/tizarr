@@ -82,6 +82,16 @@ test('load keeps stale data on refresh errors and rejects when nothing is cached
   assert.deepEqual(seen, ['old']);
 });
 
+test('invalidate drops one entry from memory and storage', () => {
+  const { storage, cache } = setup();
+  cache.set('a', 1, 100);
+  cache.set('b', 2, 100);
+  cache.invalidate('a');
+  assert.equal(cache.get('a'), null);
+  assert.equal(createCache({ storage, now: () => 1000 }).get('a'), null);
+  assert.deepEqual(cache.get('b'), { value: 2, fresh: true });
+});
+
 test('clear removes only cache entries', () => {
   const { storage, cache } = setup();
   storage.setItem('tizarr.config', '{}');

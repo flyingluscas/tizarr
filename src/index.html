@@ -9,8 +9,17 @@
     <div id="stage">
       <nav id="sidebar">
         <div class="brand">Tizarr</div>
+        <button data-nav data-action="go" data-screen="home">
+          <span class="icon" data-icon="home"></span><span data-i18n="nav.home"></span>
+        </button>
         <button data-nav data-action="go" data-screen="search">
           <span class="icon" data-icon="search"></span><span data-i18n="nav.search"></span>
+        </button>
+        <button data-nav data-action="go" data-screen="movies">
+          <span class="icon" data-icon="movie"></span><span data-i18n="nav.movies"></span>
+        </button>
+        <button data-nav data-action="go" data-screen="shows">
+          <span class="icon" data-icon="show"></span><span data-i18n="nav.shows"></span>
         </button>
         <button data-nav data-action="go" data-screen="library">
           <span class="icon" data-icon="library"></span><span data-i18n="nav.library"></span>
@@ -100,6 +109,21 @@
           </button>
           <span id="settings-status" class="status"></span>
         </div>
+      </div>
+
+      <div id="home" class="view">
+        <div id="home-notice" class="notice"></div>
+        <div id="home-shelves"></div>
+      </div>
+
+      <div id="movies" class="view">
+        <div id="movies-notice" class="notice"></div>
+        <div id="movies-shelves"></div>
+      </div>
+
+      <div id="shows" class="view">
+        <div id="shows-notice" class="notice"></div>
+        <div id="shows-shelves"></div>
       </div>
 
       <div id="search" class="view">

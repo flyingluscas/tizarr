@@ -1,5 +1,8 @@
 // Brazilian Portuguese UI text. Missing keys fall back to English.
 export default {
+  'nav.home': 'Início',
+  'nav.movies': 'Filmes',
+  'nav.shows': 'Séries',
   'nav.search': 'Buscar',
   'nav.library': 'Biblioteca',
   'nav.settings': 'Configurações',
@@ -28,6 +31,27 @@ export default {
   'region.CA': 'Canadá',
   'region.ES': 'Espanha',
 
+  'shelf.downloading': 'Baixando agora',
+  'shelf.trending': 'Em alta na semana',
+  'shelf.popular': 'Populares',
+  'shelf.popularMovies': 'Filmes populares',
+  'shelf.popularShows': 'Séries populares',
+  'shelf.recommended': 'Recomendados para você',
+  'shelf.recent': 'Adicionados recentemente',
+  'shelf.topRated': 'Mais bem avaliados',
+  'shelf.topRatedMovies': 'Filmes mais bem avaliados',
+  'shelf.topRatedShows': 'Séries mais bem avaliadas',
+  'genre.action': 'Ação',
+  'genre.comedy': 'Comédia',
+  'genre.drama': 'Drama',
+  'genre.scifi': 'Ficção científica',
+  'genre.animation': 'Animação',
+  'genre.documentary': 'Documentário',
+  'home.tmdbHint':
+    'Adicione uma chave do TMDB em Configurações para ver listas em alta, populares e por gênero.',
+  'home.tmdbError':
+    'Não foi possível carregar as listas do TMDB (verifique a chave em Configurações).',
+
   'search.placeholder': 'Buscar filmes e séries',
   'search.searching': 'Buscando…',
   'search.noResults': 'Nenhum resultado.',
@@ -54,5 +78,6 @@ export default {
 
   'error.unreachable': 'inacessível',
   'error.badKey': 'chave da API inválida (veja Configurações)',
+  'error.notFound': 'não encontrado no servidor',
   'error.notConfigured': 'Configure o {server} em Configurações.',
 };

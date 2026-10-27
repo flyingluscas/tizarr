@@ -4,6 +4,7 @@ import { $ } from './dom.js';
 import { setLanguage, translatePage } from './i18n.js';
 import { startNavigation } from './nav.js';
 import { initRouter, openScreen } from './router.js';
+import { initBrowse } from './screens/browse.js';
 import { initDetails } from './screens/details.js';
 import { initLibrary } from './screens/library.js';
 import { initSearch } from './screens/search.js';
@@ -19,9 +20,10 @@ renderIcons();
 
 initRouter();
 initSettings();
+initBrowse();
 initSearch();
 initLibrary();
 initDetails();
 startNavigation();
 
-openScreen(isConfigValid(state.config) ? 'library' : 'settings');
+openScreen(isConfigValid(state.config) ? 'home' : 'settings');

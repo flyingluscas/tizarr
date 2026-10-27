@@ -46,6 +46,11 @@ export function getSeries(server) {
   return request(server, 'GET', '/api/v3/series');
 }
 
+/** Radarr's suggestions based on the user's library (its Discover page). */
+export function getRecommendations(server) {
+  return request(server, 'GET', '/api/v3/importlist/movie?includeRecommendations=true');
+}
+
 // The queue is paged; one large page covers any home setup.
 const QUEUE_PAGE_SIZE = 200;
 
