@@ -71,7 +71,7 @@ export default {
 
   'details.request': 'Request',
   'details.requesting': 'Requesting…',
-  'details.requested': 'Requested ✓',
+  'details.requested': 'Requested',
   'details.inLibrary': 'In library',
   'details.retry': 'Retry: {message}',
 

@@ -73,7 +73,7 @@ export default {
 
   'details.request': 'Pedir',
   'details.requesting': 'Pedindo…',
-  'details.requested': 'Pedido ✓',
+  'details.requested': 'Pedido',
   'details.inLibrary': 'Na biblioteca',
   'details.retry': 'Tentar de novo: {message}',
 
