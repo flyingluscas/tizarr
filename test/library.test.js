@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
+import { emptyConfig } from '../src/config.js';
+import { t } from '../src/i18n.js';
 import {
+  loadLibrary,
   movieStatus,
   queueProgress,
   seriesStatus,
@@ -61,4 +64,20 @@ test('sortByAdded puts the newest first', () => {
     sortByAdded(items).map((i) => i.added),
     ['2026-03-01', '2026-01-01', ''],
   );
+});
+
+test('loadLibrary skips blank servers silently but reports half-configured ones', async () => {
+  const config = emptyConfig();
+  config.radarr = {
+    url: 'http://radarr.lan',
+    apiKey: 'k',
+    qualityProfileId: 0,
+    rootFolderPath: '',
+  };
+  const result = await loadLibrary(config);
+  assert.deepEqual(result, {
+    movies: [],
+    shows: [],
+    errors: [t('error.notConfigured', { server: 'Radarr' })],
+  });
 });

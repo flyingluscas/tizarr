@@ -1,5 +1,6 @@
 // What is already in Sonarr/Radarr, with a download status per title.
 import { serverReady, SERVER_NAMES } from '../config.js';
+import { t } from '../i18n.js';
 import { getMovies, getQueue, getSeries } from './arr.js';
 import { toItem } from './media.js';
 
@@ -66,7 +67,11 @@ async function loadSide(server, kind, getItems, idField) {
 export async function loadLibrary(config) {
   const errors = [];
   async function side(name, kind, getItems, idField) {
-    if (!serverReady(config[name])) return [];
+    if (!serverReady(config[name])) {
+      // A server left blank is simply off; a half-configured one is worth pointing out.
+      if (config[name].url) errors.push(t('error.notConfigured', { server: SERVER_NAMES[name] }));
+      return [];
+    }
     try {
       return await loadSide(config[name], kind, getItems, idField);
     } catch (error) {
