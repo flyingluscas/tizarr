@@ -25,12 +25,15 @@ const group = (name) => $(`.settings-group[data-group="${name}"]`);
 const groupOf = (node) => node.closest('.settings-group').dataset.group;
 const input = (name, field) => $(`[data-field="${field}"]`, group(name));
 
-function readForm() {
+// Each reader touches only its own group, so testing one server never overwrites another
+// server's draft with fields that have not been filled in yet.
+function readServer(name) {
+  draft[name].url = normalizeUrl(input(name, 'url').value);
+  draft[name].apiKey = input(name, 'apiKey').value.trim();
+}
+
+function readTmdbKey() {
   draft.app.tmdbKey = input('app', 'tmdbKey').value.trim();
-  for (const name of Object.keys(SERVER_NAMES)) {
-    draft[name].url = normalizeUrl(input(name, 'url').value);
-    draft[name].apiKey = input(name, 'apiKey').value.trim();
-  }
 }
 
 /** Renders selectable options; keeps the saved choice if still offered, else picks the first. */
@@ -62,7 +65,7 @@ function selectChip(chip) {
 }
 
 async function testServer(name) {
-  readForm();
+  readServer(name);
   const status = $('.status', group(name));
   setStatus(status, t('settings.testing'));
   try {
@@ -84,7 +87,7 @@ async function testServer(name) {
 }
 
 async function testTmdb() {
-  readForm();
+  readTmdbKey();
   const status = $('.status', group('app'));
   setStatus(status, t('settings.testing'));
   try {
@@ -96,7 +99,8 @@ async function testTmdb() {
 }
 
 function save() {
-  readForm();
+  readTmdbKey();
+  Object.keys(SERVER_NAMES).forEach(readServer);
   if (!isConfigValid(draft)) {
     setStatus($('#settings-status'), t('settings.saveInvalid'), true);
     return;
@@ -126,11 +130,15 @@ function fillForm() {
   );
   input('app', 'tmdbKey').value = draft.app.tmdbKey;
   setStatus($('.status', group('app')), '');
-  for (const name of Object.keys(SERVER_NAMES)) {
+  const names = Object.keys(SERVER_NAMES);
+  for (const name of names) {
     input(name, 'url').value = draft[name].url;
     input(name, 'apiKey').value = draft[name].apiKey;
     setStatus($('.status', group(name)), '');
-    if (draft[name].url && draft[name].apiKey) testServer(name); // reloads the option chips
+  }
+  // Only after every field is filled: re-test saved servers to reload their option chips.
+  for (const name of names) {
+    if (draft[name].url && draft[name].apiKey) testServer(name);
   }
 }
 
