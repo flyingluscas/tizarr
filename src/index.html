@@ -6,59 +6,60 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div id="settings" class="view">
-      <h1>Settings</h1>
-      <div class="servers">
-        <section class="server" data-server="sonarr">
-          <h2>Sonarr (shows)</h2>
-          <input data-nav data-field="url" type="text" placeholder="http://sonarr.lan" />
-          <input data-nav data-field="apiKey" type="text" placeholder="API key" />
-          <div class="row">
-            <button data-nav data-action="test">Test</button><span class="status"></span>
-          </div>
-          <div class="label">Quality profile</div>
-          <div class="chips" data-field="qualityProfileId"></div>
-          <div class="label">Root folder</div>
-          <div class="chips" data-field="rootFolderPath"></div>
-        </section>
-        <section class="server" data-server="radarr">
-          <h2>Radarr (movies)</h2>
-          <input data-nav data-field="url" type="text" placeholder="http://radarr.lan" />
-          <input data-nav data-field="apiKey" type="text" placeholder="API key" />
-          <div class="row">
-            <button data-nav data-action="test">Test</button><span class="status"></span>
-          </div>
-          <div class="label">Quality profile</div>
-          <div class="chips" data-field="qualityProfileId"></div>
-          <div class="label">Root folder</div>
-          <div class="chips" data-field="rootFolderPath"></div>
-        </section>
+    <div id="stage">
+      <div id="settings" class="view">
+        <h1>Settings</h1>
+        <div class="servers">
+          <section class="server" data-server="sonarr">
+            <h2>Sonarr (shows)</h2>
+            <input data-nav data-field="url" type="text" placeholder="http://sonarr.lan" />
+            <input data-nav data-field="apiKey" type="text" placeholder="API key" />
+            <div class="row">
+              <button data-nav data-action="test">Test</button><span class="status"></span>
+            </div>
+            <div class="label">Quality profile</div>
+            <div class="chips" data-field="qualityProfileId"></div>
+            <div class="label">Root folder</div>
+            <div class="chips" data-field="rootFolderPath"></div>
+          </section>
+          <section class="server" data-server="radarr">
+            <h2>Radarr (movies)</h2>
+            <input data-nav data-field="url" type="text" placeholder="http://radarr.lan" />
+            <input data-nav data-field="apiKey" type="text" placeholder="API key" />
+            <div class="row">
+              <button data-nav data-action="test">Test</button><span class="status"></span>
+            </div>
+            <div class="label">Quality profile</div>
+            <div class="chips" data-field="qualityProfileId"></div>
+            <div class="label">Root folder</div>
+            <div class="chips" data-field="rootFolderPath"></div>
+          </section>
+        </div>
+        <div class="row">
+          <button data-nav data-action="save">Save</button
+          ><span id="settings-status" class="status"></span>
+        </div>
       </div>
-      <div class="row">
-        <button data-nav data-action="save">Save</button
-        ><span id="settings-status" class="status"></span>
+
+      <div id="search" class="view">
+        <div class="row">
+          <input id="query" data-nav type="text" placeholder="Search movies and shows" />
+          <button data-nav data-action="settings">Settings</button>
+        </div>
+        <div id="notice"></div>
+        <div id="results"></div>
+      </div>
+
+      <div id="details" class="view">
+        <img id="d-poster" alt="" />
+        <div class="d-info">
+          <h1 id="d-title"></h1>
+          <div id="d-meta"></div>
+          <p id="d-overview"></p>
+          <button id="d-request" data-nav data-action="request"></button>
+        </div>
       </div>
     </div>
-
-    <div id="search" class="view">
-      <div class="row">
-        <input id="query" data-nav type="text" placeholder="Search movies and shows" />
-        <button data-nav data-action="settings">Settings</button>
-      </div>
-      <div id="notice"></div>
-      <div id="results"></div>
-    </div>
-
-    <div id="details" class="view">
-      <img id="d-poster" alt="" />
-      <div class="d-info">
-        <h1 id="d-title"></h1>
-        <div id="d-meta"></div>
-        <p id="d-overview"></p>
-        <button id="d-request" data-nav data-action="request"></button>
-      </div>
-    </div>
-
     <script src="app.js"></script>
   </body>
 </html>
