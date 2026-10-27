@@ -1,0 +1,27 @@
+{
+  "name": "tizarr",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Search and request movies/shows from Sonarr & Radarr on a Samsung Tizen TV",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node scripts/build.js",
+    "package": "npm run build && cd dist && zip -qr ../tizarr.wgt .",
+    "test": "node --test",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "check": "eslint . && prettier --check . && node --test && npm run build && node scripts/validate.js"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "acorn": "^8.19.0",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.13.0",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.10"
+  }
+}

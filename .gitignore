@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.wgt
+docs/
+.DS_Store
+
+# Versioned here even though ignored globally
+!AGENTS.md
+!CLAUDE.md
