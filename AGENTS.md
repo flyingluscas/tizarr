@@ -72,15 +72,12 @@ their TV with their API keys in it.
 - Each server's API key is sent only to that server's own configured URL; the TMDB key only to
   `api.themoviedb.org`. Keys are stored only in the TV's `localStorage` and never logged.
 - No telemetry, analytics, crash reporting, ads or calls to any other third party. Adding a
-  new network destination needs the owner's approval. Approved so far, besides the user's own
-  servers and TMDB: `api.github.com` (latest release version only, no data sent) and
-  `ws://localhost:8091` (TizenBrew Installer's service on the TV, for in-app updates).
+  new network destination needs the owner's approval.
 - The app may only add titles (`POST` movie/series). Anything that deletes, unmonitors or
   changes settings on a user's server needs explicit owner approval.
 - API key fields stay masked (`type="password"`); never display a saved key in plain text.
 - Do not add Tizen privileges in `tizen/config.xml` without approval. `<access origin="*">`
-  is required because users' servers can be anywhere; `application.launch` is approved only to
-  start TizenBrew Installer's service. Do not widen anything else.
+  is required because users' servers can be anywhere; do not widen anything else.
 
 #### Code safety
 
@@ -163,7 +160,6 @@ src/
     media.js          movie/show kinds, mapping lookup results, request bodies (pure)
     library.js        library + queue → items with status (pure helpers + loader)
     cache.js          memory + localStorage cache with TTL, stale-while-revalidate
-    updates.js        latest GitHub release + install via TizenBrew Installer's service
   ui/
     card.js           poster card with status badge
     grid.js           renders cards in one DOM write, keeps focus on refresh
@@ -174,7 +170,6 @@ src/
     search.js         parallel lookups, poster grid
     library.js        Movies | Shows tabs with status
     details.js        overlay: overview and Request button
-    settings-updates.js  Settings' Updates block + sidebar "Update available" note
   fonts/              Roboto variable font (woff2, latin) + its OFL license
   index.html          markup for all screens (text via data-i18n)
   style.css           1920×1080 TV layout

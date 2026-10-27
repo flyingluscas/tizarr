@@ -15,7 +15,6 @@ import { LANGUAGES, setLanguage, t, translatePage } from '../i18n.js';
 import { openScreen, registerScreen } from '../router.js';
 import { state } from '../state.js';
 import { resetLibrary } from './library.js';
-import { checkForUpdates, installUpdate, renderUpdates } from './settings-updates.js';
 
 let draft = null;
 
@@ -142,12 +141,7 @@ export function initSettings() {
       testTmdb,
       chip: selectChip,
       save,
-      checkUpdate: checkForUpdates,
-      installUpdate,
     },
-    onOpen: () => {
-      fillForm();
-      renderUpdates();
-    },
+    onOpen: fillForm,
   });
 }
