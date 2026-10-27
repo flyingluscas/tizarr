@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import {
+  emptyApp,
   emptyConfig,
   emptyServer,
   isConfigValid,
@@ -39,9 +40,15 @@ test('normalizeUrl fixes what people type on a remote', () => {
 test('loadConfig round-trips and recovers from bad data', () => {
   const storage = memoryStorage();
   assert.deepEqual(loadConfig(storage), emptyConfig());
-  const config = { sonarr: ready, radarr: emptyServer() };
+  const config = { app: emptyApp(), sonarr: ready, radarr: emptyServer() };
   saveConfig(config, storage);
   assert.deepEqual(loadConfig(storage), config);
   storage.setItem('tizarr.config', '{not json');
   assert.deepEqual(loadConfig(storage), emptyConfig());
+});
+
+test('loadConfig fills in defaults for configs saved by older versions', () => {
+  const storage = memoryStorage();
+  storage.setItem('tizarr.config', JSON.stringify({ sonarr: ready, radarr: emptyServer() }));
+  assert.deepEqual(loadConfig(storage), { app: emptyApp(), sonarr: ready, radarr: emptyServer() });
 });

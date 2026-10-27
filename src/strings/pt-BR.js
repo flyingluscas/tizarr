@@ -1,0 +1,58 @@
+// Brazilian Portuguese UI text. Missing keys fall back to English.
+export default {
+  'nav.search': 'Buscar',
+  'nav.library': 'Biblioteca',
+  'nav.settings': 'Configurações',
+
+  'settings.title': 'Configurações',
+  'settings.general': 'Geral',
+  'settings.language': 'Idioma',
+  'settings.region': 'Região',
+  'settings.tmdbKey': 'Chave da API do TMDB (opcional)',
+  'settings.tmdbHint': 'Ativa as listas de em alta, populares e por gênero.',
+  'settings.sonarr': 'Sonarr (séries)',
+  'settings.radarr': 'Radarr (filmes)',
+  'settings.apiKey': 'Chave da API',
+  'settings.test': 'Testar',
+  'settings.save': 'Salvar',
+  'settings.qualityProfile': 'Perfil de qualidade',
+  'settings.rootFolder': 'Pasta raiz',
+  'settings.testing': 'Testando…',
+  'settings.connected': 'Conectado',
+  'settings.saveInvalid': 'Configure e teste pelo menos um servidor primeiro.',
+
+  'region.BR': 'Brasil',
+  'region.US': 'Estados Unidos',
+  'region.PT': 'Portugal',
+  'region.GB': 'Reino Unido',
+  'region.CA': 'Canadá',
+  'region.ES': 'Espanha',
+
+  'search.placeholder': 'Buscar filmes e séries',
+  'search.searching': 'Buscando…',
+  'search.noResults': 'Nenhum resultado.',
+
+  'library.movies': 'Filmes',
+  'library.shows': 'Séries',
+  'library.empty': 'Nada aqui ainda.',
+  'library.loading': 'Carregando…',
+  'library.episodes': '{have}/{total} episódios',
+
+  'status.downloaded': 'Baixado',
+  'status.downloading': 'Baixando {progress}%',
+  'status.missing': 'Faltando',
+  'status.upcoming': 'Em breve',
+
+  'kind.movie': 'Filme',
+  'kind.show': 'Série',
+
+  'details.request': 'Pedir',
+  'details.requesting': 'Pedindo…',
+  'details.requested': 'Pedido ✓',
+  'details.inLibrary': 'Na biblioteca',
+  'details.retry': 'Tentar de novo: {message}',
+
+  'error.unreachable': 'inacessível',
+  'error.badKey': 'chave da API inválida (veja Configurações)',
+  'error.notConfigured': 'Configure o {server} em Configurações.',
+};

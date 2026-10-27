@@ -7,47 +7,98 @@
   </head>
   <body>
     <div id="stage">
+      <nav id="sidebar">
+        <div class="brand">Tizarr</div>
+        <button data-nav data-action="go" data-screen="search" data-i18n="nav.search"></button>
+        <button data-nav data-action="go" data-screen="library" data-i18n="nav.library"></button>
+        <button data-nav data-action="go" data-screen="settings" data-i18n="nav.settings"></button>
+      </nav>
+
       <div id="settings" class="view">
-        <h1>Settings</h1>
-        <div class="servers">
-          <section class="server" data-server="sonarr">
-            <h2>Sonarr (shows)</h2>
-            <input data-nav data-field="url" type="text" placeholder="http://sonarr.lan" />
-            <input data-nav data-field="apiKey" type="text" placeholder="API key" />
+        <h1 data-i18n="settings.title"></h1>
+        <div class="columns">
+          <section class="settings-group" data-group="app">
+            <h2 data-i18n="settings.general"></h2>
+            <div class="label" data-i18n="settings.language"></div>
+            <div class="chips" data-field="language"></div>
+            <div class="label" data-i18n="settings.region"></div>
+            <div class="chips" data-field="region"></div>
+            <div class="label" data-i18n="settings.tmdbKey"></div>
+            <input data-nav data-field="tmdbKey" type="text" />
             <div class="row">
-              <button data-nav data-action="test">Test</button><span class="status"></span>
+              <button data-nav data-action="testTmdb" data-i18n="settings.test"></button
+              ><span class="status"></span>
             </div>
-            <div class="label">Quality profile</div>
+            <div class="hint" data-i18n="settings.tmdbHint"></div>
+          </section>
+          <section class="settings-group" data-group="sonarr">
+            <h2 data-i18n="settings.sonarr"></h2>
+            <input data-nav data-field="url" type="text" placeholder="http://sonarr.lan" />
+            <input
+              data-nav
+              data-field="apiKey"
+              type="text"
+              data-i18n-placeholder="settings.apiKey"
+            />
+            <div class="row">
+              <button data-nav data-action="test" data-i18n="settings.test"></button
+              ><span class="status"></span>
+            </div>
+            <div class="label" data-i18n="settings.qualityProfile"></div>
             <div class="chips" data-field="qualityProfileId"></div>
-            <div class="label">Root folder</div>
+            <div class="label" data-i18n="settings.rootFolder"></div>
             <div class="chips" data-field="rootFolderPath"></div>
           </section>
-          <section class="server" data-server="radarr">
-            <h2>Radarr (movies)</h2>
+          <section class="settings-group" data-group="radarr">
+            <h2 data-i18n="settings.radarr"></h2>
             <input data-nav data-field="url" type="text" placeholder="http://radarr.lan" />
-            <input data-nav data-field="apiKey" type="text" placeholder="API key" />
+            <input
+              data-nav
+              data-field="apiKey"
+              type="text"
+              data-i18n-placeholder="settings.apiKey"
+            />
             <div class="row">
-              <button data-nav data-action="test">Test</button><span class="status"></span>
+              <button data-nav data-action="test" data-i18n="settings.test"></button
+              ><span class="status"></span>
             </div>
-            <div class="label">Quality profile</div>
+            <div class="label" data-i18n="settings.qualityProfile"></div>
             <div class="chips" data-field="qualityProfileId"></div>
-            <div class="label">Root folder</div>
+            <div class="label" data-i18n="settings.rootFolder"></div>
             <div class="chips" data-field="rootFolderPath"></div>
           </section>
         </div>
         <div class="row">
-          <button data-nav data-action="save">Save</button
+          <button data-nav data-action="save" data-i18n="settings.save"></button
           ><span id="settings-status" class="status"></span>
         </div>
       </div>
 
       <div id="search" class="view">
-        <div class="row">
-          <input id="query" data-nav type="text" placeholder="Search movies and shows" />
-          <button data-nav data-action="settings">Settings</button>
+        <input id="query" data-nav type="text" data-i18n-placeholder="search.placeholder" />
+        <div id="search-notice" class="notice"></div>
+        <div id="search-results" class="grid"></div>
+      </div>
+
+      <div id="library" class="view">
+        <div class="tabs">
+          <button
+            class="tab"
+            data-nav
+            data-action="tab"
+            data-tab="movie"
+            data-i18n="library.movies"
+          ></button>
+          <button
+            class="tab"
+            data-nav
+            data-action="tab"
+            data-tab="show"
+            data-i18n="library.shows"
+          ></button>
         </div>
-        <div id="notice"></div>
-        <div id="results"></div>
+        <div id="library-notice" class="notice"></div>
+        <div id="library-grid" class="grid"></div>
       </div>
 
       <div id="details" class="view">

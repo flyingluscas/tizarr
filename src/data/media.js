@@ -9,7 +9,7 @@ export const KINDS = {
 const TMDB_ORIGINAL = '/t/p/original/';
 const TMDB_CARD_SIZE = '/t/p/w342/';
 
-function posterUrl(images = []) {
+export function posterUrl(images = []) {
   // Only remoteUrl is reachable without auth; `url` points at the *arr server.
   const poster = images.find((image) => image.coverType === 'poster' && image.remoteUrl);
   return poster ? poster.remoteUrl.replace(TMDB_ORIGINAL, TMDB_CARD_SIZE) : '';

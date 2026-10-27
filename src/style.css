@@ -23,6 +23,53 @@ body {
   overflow: hidden;
   transform-origin: 0 0;
 }
+/* Sidebar: persistent menu on the left, hidden while an overlay (Details) is open. */
+#sidebar {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 300px;
+  height: 1080px;
+  padding: 50px 24px;
+  background: #0b0b0b;
+}
+.with-sidebar #sidebar {
+  display: block;
+}
+.with-sidebar .view {
+  margin-left: 300px;
+}
+.brand {
+  margin: 0 0 40px 20px;
+  color: #f5c518;
+  font-size: 40px;
+  font-weight: bold;
+}
+#sidebar button {
+  display: block;
+  width: 100%;
+  margin: 0 0 12px;
+  border-color: transparent;
+  background: transparent;
+  text-align: left;
+}
+#sidebar button.active {
+  background: #222;
+  color: #f5c518;
+}
+#sidebar button.focused {
+  border-color: #f5c518;
+}
+
+.tabs {
+  display: flex;
+}
+.tab.selected {
+  background: #f5c518;
+  color: #111;
+}
+
 .view {
   display: none;
   padding: 60px 80px;
@@ -76,12 +123,16 @@ button:disabled {
 .row input {
   flex: 1;
 }
-.servers {
+.columns {
   display: flex;
 }
-.server {
+.settings-group {
   flex: 1;
-  margin-right: 60px;
+  margin-right: 50px;
+}
+.hint {
+  color: #777;
+  font-size: 22px;
 }
 .label {
   color: #999;
@@ -103,12 +154,12 @@ button:disabled {
   color: #ff6b6b;
 }
 
-#notice {
+.notice {
   min-height: 40px;
   margin: 10px 0;
   color: #999;
 }
-#results {
+.grid {
   display: flex;
   flex-wrap: wrap;
 }
@@ -150,6 +201,15 @@ button:disabled {
   background: #2e7d32;
   color: #fff;
   font-size: 20px;
+}
+.status-downloading {
+  background: #1565c0;
+}
+.status-missing {
+  background: #8e2c2c;
+}
+.status-upcoming {
+  background: #6a3fa0;
 }
 
 #details.active {

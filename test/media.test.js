@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { buildRequestBody, interleave, toItem } from '../src/media.js';
+import { buildRequestBody, interleave, toItem } from '../src/data/media.js';
 
 const movie = {
   title: 'Dune',

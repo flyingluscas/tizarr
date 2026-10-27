@@ -1,0 +1,58 @@
+// English UI text. Every key here must also exist in the other language files.
+export default {
+  'nav.search': 'Search',
+  'nav.library': 'Library',
+  'nav.settings': 'Settings',
+
+  'settings.title': 'Settings',
+  'settings.general': 'General',
+  'settings.language': 'Language',
+  'settings.region': 'Region',
+  'settings.tmdbKey': 'TMDB API key (optional)',
+  'settings.tmdbHint': 'Enables trending, popular and genre rows.',
+  'settings.sonarr': 'Sonarr (shows)',
+  'settings.radarr': 'Radarr (movies)',
+  'settings.apiKey': 'API key',
+  'settings.test': 'Test',
+  'settings.save': 'Save',
+  'settings.qualityProfile': 'Quality profile',
+  'settings.rootFolder': 'Root folder',
+  'settings.testing': 'Testing…',
+  'settings.connected': 'Connected',
+  'settings.saveInvalid': 'Set up and test at least one server first.',
+
+  'region.BR': 'Brazil',
+  'region.US': 'United States',
+  'region.PT': 'Portugal',
+  'region.GB': 'United Kingdom',
+  'region.CA': 'Canada',
+  'region.ES': 'Spain',
+
+  'search.placeholder': 'Search movies and shows',
+  'search.searching': 'Searching…',
+  'search.noResults': 'No results.',
+
+  'library.movies': 'Movies',
+  'library.shows': 'Shows',
+  'library.empty': 'Nothing here yet.',
+  'library.loading': 'Loading…',
+  'library.episodes': '{have}/{total} episodes',
+
+  'status.downloaded': 'Downloaded',
+  'status.downloading': 'Downloading {progress}%',
+  'status.missing': 'Missing',
+  'status.upcoming': 'Upcoming',
+
+  'kind.movie': 'Movie',
+  'kind.show': 'Show',
+
+  'details.request': 'Request',
+  'details.requesting': 'Requesting…',
+  'details.requested': 'Requested ✓',
+  'details.inLibrary': 'In library',
+  'details.retry': 'Retry: {message}',
+
+  'error.unreachable': 'unreachable',
+  'error.badKey': 'invalid API key (check Settings)',
+  'error.notConfigured': 'Set up {server} in Settings.',
+};

@@ -1,25 +1,26 @@
-// Details view: poster, overview and the one-click Request button.
-import { add } from '../api.js';
+// Details overlay: poster, overview and the one-click Request button.
+import { add } from '../data/arr.js';
+import { KINDS, buildRequestBody } from '../data/media.js';
 import { $ } from '../dom.js';
-import { KINDS, buildRequestBody } from '../media.js';
-import { registerView, show } from '../nav.js';
+import { t } from '../i18n.js';
+import { openOverlay, registerOverlay } from '../router.js';
 import { state } from '../state.js';
-import { STRINGS } from '../strings.js';
-import { describe, markInLibrary } from './card.js';
+import { describe, markInLibrary } from '../ui/card.js';
 
 let selected = null;
 let sourceCard = null;
 
 const BUTTON_LABELS = {
-  ready: STRINGS.request,
-  busy: STRINGS.requesting,
-  done: STRINGS.requested,
-  inLibrary: STRINGS.inLibrary,
+  ready: 'details.request',
+  busy: 'details.requesting',
+  done: 'details.requested',
+  inLibrary: 'details.inLibrary',
 };
 
 function setRequestState(status, message = '') {
   const button = $('#d-request');
-  button.textContent = status === 'error' ? STRINGS.retry + message : BUTTON_LABELS[status];
+  button.textContent =
+    status === 'error' ? t('details.retry', { message }) : t(BUTTON_LABELS[status]);
   button.disabled = status === 'busy' || status === 'done' || status === 'inLibrary';
   button.classList.toggle('error', status === 'error');
 }
@@ -46,12 +47,9 @@ export function openDetails(item, card) {
   $('#d-meta').textContent = describe(item);
   $('#d-overview').textContent = item.overview;
   setRequestState(item.inLibrary ? 'inLibrary' : 'ready');
-  show('details');
+  openOverlay('details', card);
 }
 
 export function initDetails() {
-  registerView('details', {
-    actions: { request: requestSelected },
-    back: () => show('search', sourceCard),
-  });
+  registerOverlay('details', { actions: { request: requestSelected } });
 }

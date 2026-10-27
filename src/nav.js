@@ -1,5 +1,6 @@
 // Remote-control navigation: focus handling, arrow movement, Enter/Back and view switching.
 // Each view registers its click actions and Back behaviour; this module routes keys to them.
+// Views flagged `sidebar` also let focus move into the persistent #sidebar.
 import { $, $$ } from './dom.js';
 
 const KEY = {
@@ -18,15 +19,21 @@ const KEY = {
 const SIDE_WEIGHT = 2;
 
 const views = {};
+// Actions available from any view (e.g. sidebar entries).
+const globalActions = {};
 let current = null;
 
 export function exitApp() {
   if (window.tizen) tizen.application.getCurrentApplication().exit();
 }
 
-/** actions: { [data-action]: (element) => void }, back: () => void */
-export function registerView(id, { actions = {}, back = exitApp } = {}) {
-  views[id] = { actions, back };
+/** actions: { [data-action]: (element) => void }, back: () => void, sidebar: boolean */
+export function registerView(id, { actions = {}, back = exitApp, sidebar = false } = {}) {
+  views[id] = { actions, back, sidebar };
+}
+
+export function registerGlobalActions(actions) {
+  Object.assign(globalActions, actions);
 }
 
 export function setFocus(target) {
@@ -49,7 +56,9 @@ function center(node) {
 
 /** Focuses the nearest visible element in the pressed direction. */
 function move(key) {
-  const candidates = $$(`#${current} [data-nav]`).filter((node) => node.offsetParent !== null);
+  const own = `#${current} [data-nav]`;
+  const selector = views[current].sidebar ? `${own}, #sidebar [data-nav]` : own;
+  const candidates = $$(selector).filter((node) => node.offsetParent !== null);
   const focused = $('.focused');
   if (!focused || !candidates.includes(focused)) return setFocus(candidates[0]);
 
@@ -109,7 +118,8 @@ function onClick(event) {
   const target = event.target.closest('[data-nav]');
   if (!target) return;
   setFocus(target);
-  const action = views[current].actions[target.dataset.action];
+  const name = target.dataset.action;
+  const action = views[current].actions[name] || globalActions[name];
   if (action) action(target);
 }
 
