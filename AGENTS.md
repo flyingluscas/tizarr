@@ -170,6 +170,7 @@ src/
     arr.js            Sonarr/Radarr v3 client (translated errors)
     tmdb.js           TMDB v3 client (optional key): lists, genres, TVDB ids
     shelves.js        which rows each browse screen shows and how to fill them (pure + loader)
+    search.js         TMDB multi search (else Radarr/Sonarr lookups), results cache, recents
     resolve.js        discovery title → Radarr/Sonarr lookup result, before requesting
     trailers.js       trailer id (Radarr, else TMDB videos) and the hosted player page URL
     details.js        facts, ratings breakdown, seasons and progress for Details (pure)
@@ -187,7 +188,7 @@ src/
   screens/
     settings.js       language, region, TMDB key; per server URL/key, Test, defaults
     browse.js         Home, Movies, Shows: shelves that scroll sideways
-    search.js         parallel lookups, poster grid
+    search.js         live results, Movies/Shows filter, recent searches + trending when empty
     library.js        Movies | Shows tabs with status
     downloads.js      live queue (5 s refresh while visible) + airing soon
     details.js        overlay: backdrop hero, facts, ratings, Request, More like this
@@ -240,8 +241,8 @@ Sonarr and Radarr v3, header `X-Api-Key`: `system/status`, `qualityprofile`, `ro
 `DELETE queue/bulk`, `DELETE movie/{id}` / `DELETE series/{id}`, Radarr
 `importlist/movie?includeRecommendations=true`, `POST series` / `POST movie`.
 
-TMDB v3 (`api_key` query param): `configuration`, `trending/{movie|tv}/week`,
-`{movie|tv}/popular`, `{movie|tv}/top_rated`, `discover/{movie|tv}`,
+TMDB v3 (`api_key` query param): `configuration`, `trending/{movie|tv}/day`,
+`{movie|tv}/popular`, `{movie|tv}/top_rated`, `discover/{movie|tv}`, `search/multi`,
 `{movie|tv}/{id}/recommendations`, `{movie|tv}/{id}/videos`, `tv/{id}`, `tv/{id}/external_ids`.
 
 All of them send `Access-Control-Allow-Origin: *`, so the app calls them directly.

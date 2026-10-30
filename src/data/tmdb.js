@@ -78,6 +78,26 @@ export async function fetchList(app, type, kind, genreId) {
     .map((result) => fromTmdb(kind, result));
 }
 
+const KIND_BY_MEDIA_TYPE = { movie: 'movie', tv: 'show' };
+
+/** Movies and shows from a multi search, in TMDB's ranking; people and posterless titles go. */
+export function fromSearchResults(results) {
+  return results
+    .filter((result) => KIND_BY_MEDIA_TYPE[result.media_type] && result.poster_path)
+    .slice(0, MAX_ITEMS)
+    .map((result) => fromTmdb(KIND_BY_MEDIA_TYPE[result.media_type], result));
+}
+
+/** One call for movies and shows, ranked together (much lighter than Radarr/Sonarr lookups). */
+export async function searchTmdb(app, query) {
+  const data = await get(app.tmdbKey, '/search/multi', {
+    query,
+    language: LANGUAGE_CODES[app.language] || LANGUAGE_CODES.en,
+    include_adult: false,
+  });
+  return fromSearchResults(data.results || []);
+}
+
 /** "More like this" for a title. */
 export async function fetchRecommendations(app, kind, tmdbId) {
   const language = LANGUAGE_CODES[app.language] || LANGUAGE_CODES.en;

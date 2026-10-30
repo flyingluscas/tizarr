@@ -262,6 +262,18 @@ button:disabled {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Loading placeholders: same size as a card, so results don't shift the layout in. */
+.placeholder .poster,
+.placeholder .title-bar {
+  background: #262626;
+}
+.placeholder .title-bar {
+  height: 24px;
+  margin: 12px;
+}
+#search-start {
+  margin-top: 10px;
+}
 .card .meta {
   padding: 4px 12px 12px;
   font-size: 20px;

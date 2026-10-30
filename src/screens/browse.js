@@ -2,10 +2,12 @@
 // Each shelf draws from the cache instantly and refreshes in the background on its own.
 import {
   LIBRARY_TYPES,
+  SHELF_TTL_MS,
   isTmdbShelf,
   libraryIndex,
   libraryShelf,
   loadShelf,
+  shelfCacheKey,
   shelvesFor,
   uniqueAcrossShelves,
   withLibraryStatus,
@@ -19,8 +21,6 @@ import { state } from '../state.js';
 import { renderGrid } from '../ui/grid.js';
 import { openDetails } from './details.js';
 
-// Daily trending moves within hours, and TMDB list calls are small and cheap.
-const SHELF_TTL_MS = 60 * 60 * 1000;
 const ROW_POSTER_SIZE = 'w342';
 
 function sameTitles(a, b) {
@@ -104,10 +104,9 @@ function createBrowseScreen(id) {
   }
 
   function loadFetchedShelves() {
-    const { language, region } = state.config.app;
     for (const shelf of shelves) {
       if (LIBRARY_TYPES.includes(shelf.type)) continue;
-      const key = `shelf:${id}:${shelf.id}:${language}:${region}`;
+      const key = shelfCacheKey(id, shelf.id, state.config.app);
       state.cache
         .load(
           key,

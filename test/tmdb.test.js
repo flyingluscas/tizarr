@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { fromTmdb, listRequest, tmdbUrl } from '../src/data/tmdb.js';
+import { fromSearchResults, fromTmdb, listRequest, tmdbUrl } from '../src/data/tmdb.js';
 
 test('tmdbUrl encodes the key and skips empty params', () => {
   assert.equal(
@@ -50,4 +50,20 @@ test('fromTmdb maps movies and shows to items', () => {
 test('fromTmdb rounds the TMDB score and skips unrated titles', () => {
   assert.equal(fromTmdb('movie', { id: 1, vote_average: 7.849, vote_count: 900 }).rating, 7.8);
   assert.equal(fromTmdb('movie', { id: 1, vote_average: 0, vote_count: 0 }).rating, null);
+});
+
+test('fromSearchResults keeps movies and shows with posters, in TMDB order', () => {
+  const items = fromSearchResults([
+    { media_type: 'person', id: 1, name: 'Someone', profile_path: '/p.jpg' },
+    { media_type: 'tv', id: 2, name: 'Show', poster_path: '/s.jpg', first_air_date: '2020-01-01' },
+    { media_type: 'movie', id: 3, title: 'No poster' },
+    { media_type: 'movie', id: 4, title: 'Movie', poster_path: '/m.jpg' },
+  ]);
+  assert.deepEqual(
+    items.map((item) => [item.kind, item.tmdbId]),
+    [
+      ['show', 2],
+      ['movie', 4],
+    ],
+  );
 });

@@ -6,6 +6,13 @@ import { interleave, toItem } from './media.js';
 import { fetchList } from './tmdb.js';
 
 const MAX_ITEMS = 20;
+// Daily trending moves within hours, and TMDB list calls are small and cheap.
+export const SHELF_TTL_MS = 60 * 60 * 1000;
+
+/** Cache key for a fetched shelf; Search reuses Home's Trending through it. */
+export function shelfCacheKey(screen, shelfId, app) {
+  return `shelf:${screen}:${shelfId}:${app.language}:${app.region}`;
+}
 
 // TMDB genre ids differ between movies and TV for some genres.
 export const GENRES = [

@@ -54,6 +54,10 @@ export default {
   'search.placeholder': 'Search movies and shows',
   'search.searching': 'Searching…',
   'search.noResults': 'No results.',
+  'search.all': 'All',
+  'search.movies': 'Movies',
+  'search.shows': 'Shows',
+  'search.recent': 'Recent searches',
 
   'library.movies': 'Movies',
   'library.shows': 'Shows',

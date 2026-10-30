@@ -134,8 +134,29 @@
           <span class="icon" data-icon="search"></span>
           <input id="query" data-nav type="text" data-i18n-placeholder="search.placeholder" />
         </div>
+        <div id="search-filters" class="tabs" hidden>
+          <button class="tab" data-nav data-action="filter" data-filter="all">
+            <span class="icon" data-icon="search"></span><span data-i18n="search.all"></span>
+          </button>
+          <button class="tab" data-nav data-action="filter" data-filter="movie">
+            <span class="icon" data-icon="movie"></span><span data-i18n="search.movies"></span>
+          </button>
+          <button class="tab" data-nav data-action="filter" data-filter="show">
+            <span class="icon" data-icon="show"></span><span data-i18n="search.shows"></span>
+          </button>
+        </div>
         <div id="search-notice" class="notice"></div>
         <div id="search-results" class="grid"></div>
+        <div id="search-start">
+          <section id="search-recent" hidden>
+            <h2 data-i18n="search.recent"></h2>
+            <div class="chips"></div>
+          </section>
+          <section id="search-trending" class="shelf" hidden>
+            <h2 data-i18n="shelf.trending"></h2>
+            <div class="shelf-track"></div>
+          </section>
+        </div>
       </div>
 
       <div id="library" class="view">

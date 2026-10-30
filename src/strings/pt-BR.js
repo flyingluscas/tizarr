@@ -56,6 +56,10 @@ export default {
   'search.placeholder': 'Buscar filmes e séries',
   'search.searching': 'Buscando…',
   'search.noResults': 'Nenhum resultado.',
+  'search.all': 'Tudo',
+  'search.movies': 'Filmes',
+  'search.shows': 'Séries',
+  'search.recent': 'Buscas recentes',
 
   'library.movies': 'Filmes',
   'library.shows': 'Séries',
