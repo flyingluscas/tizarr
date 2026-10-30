@@ -12,6 +12,8 @@ const MAX_ITEMS = 20;
 
 const LANGUAGE_CODES = { en: 'en-US', 'pt-BR': 'pt-BR' };
 const TMDB_KIND = { movie: 'movie', show: 'tv' };
+// The weekly window keeps the same titles on top for weeks; daily follows what is new.
+const TRENDING_WINDOW = 'day';
 
 export function tmdbUrl(key, path, params = {}) {
   const query = Object.keys(params)
@@ -34,7 +36,7 @@ export function testKey(key) {
 export function listRequest(type, kind, { genreId, language, region } = {}) {
   const tv = TMDB_KIND[kind];
   const params = { language: LANGUAGE_CODES[language] || LANGUAGE_CODES.en, region };
-  if (type === 'trending') return { path: `/trending/${tv}/week`, params };
+  if (type === 'trending') return { path: `/trending/${tv}/${TRENDING_WINDOW}`, params };
   if (type === 'popular') return { path: `/${tv}/popular`, params };
   if (type === 'topRated') return { path: `/${tv}/top_rated`, params };
   return {

@@ -118,3 +118,28 @@ export function withLibraryStatus(items, index) {
     return owned ? { ...item, ...owned, inLibrary: true } : item;
   });
 }
+
+/**
+ * Shows each discovery title only in the first shelf that has it, so Trending, Popular and
+ * genre rows don't repeat the same posters. Library shelves (Downloading, Recently added)
+ * are the user's own titles: they are kept whole and don't hide anything elsewhere.
+ */
+export function uniqueAcrossShelves(shelves, itemsByShelf) {
+  const seen = new Set();
+  const result = {};
+  for (const shelf of shelves) {
+    const items = itemsByShelf[shelf.id] || [];
+    if (LIBRARY_TYPES.includes(shelf.type)) {
+      result[shelf.id] = items;
+      continue;
+    }
+    result[shelf.id] = items.filter((item) => {
+      if (!item.tmdbId) return true;
+      const key = `${item.kind}:${item.tmdbId}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+  return result;
+}

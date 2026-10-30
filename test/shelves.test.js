@@ -6,6 +6,7 @@ import {
   libraryIndex,
   libraryShelf,
   shelvesFor,
+  uniqueAcrossShelves,
   withLibraryStatus,
 } from '../src/data/shelves.js';
 
@@ -63,4 +64,25 @@ test('withLibraryStatus marks owned titles by kind and TMDB id', () => {
   });
   assert.equal(other.inLibrary, false);
   assert.equal(items[0].inLibrary, false, 'input items are not mutated');
+});
+
+test('uniqueAcrossShelves keeps each title in its first discovery shelf only', () => {
+  const shelves = [
+    { id: 'downloading', type: 'downloading' },
+    { id: 'trending', type: 'trending' },
+    { id: 'popular', type: 'popular' },
+    { id: 'recent', type: 'recent' },
+  ];
+  const movie = (tmdbId) => ({ kind: 'movie', tmdbId });
+  const result = uniqueAcrossShelves(shelves, {
+    downloading: [movie(1)],
+    trending: [movie(1), movie(2), { kind: 'show', tmdbId: 2 }],
+    popular: [movie(2), movie(3), { kind: 'movie', tmdbId: null }],
+    recent: [movie(2)],
+  });
+  const ids = (list) => list.map((item) => `${item.kind}:${item.tmdbId}`);
+  assert.deepEqual(ids(result.downloading), ['movie:1']);
+  assert.deepEqual(ids(result.trending), ['movie:1', 'movie:2', 'show:2']);
+  assert.deepEqual(ids(result.popular), ['movie:3', 'movie:null']);
+  assert.deepEqual(ids(result.recent), ['movie:2']);
 });

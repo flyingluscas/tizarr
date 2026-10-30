@@ -11,7 +11,7 @@ test('tmdbUrl encodes the key and skips empty params', () => {
 
 test('listRequest maps list types, kinds and language codes', () => {
   assert.deepEqual(listRequest('trending', 'show', { language: 'en', region: 'BR' }), {
-    path: '/trending/tv/week',
+    path: '/trending/tv/day',
     params: { language: 'en-US', region: 'BR' },
   });
   assert.equal(listRequest('topRated', 'movie').path, '/movie/top_rated');
