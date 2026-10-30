@@ -33,7 +33,7 @@ export default {
   'region.ES': 'Espanha',
 
   'shelf.downloading': 'Baixando agora',
-  'shelf.trending': 'Em alta na semana',
+  'shelf.trending': 'Em alta hoje',
   'shelf.popular': 'Populares',
   'shelf.popularMovies': 'Filmes populares',
   'shelf.popularShows': 'Séries populares',
